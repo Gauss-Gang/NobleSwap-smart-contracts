@@ -1,5 +1,5 @@
-# Pancake Farms and Pools
+# Noble Swap Farms and Pool
 
 ## Description
 
-This repo includes various contracts like MasterChef (CAKE farms), SmartChef (single-asset pool), and the CAKE token contract.
+This repo includes various contracts like MasterChef (Noble farms), SmartChef (single-asset pool), and the NOBLE token contract.
