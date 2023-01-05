@@ -1,13 +1,13 @@
 {
-  "name": "pancake-contracts",
+  "name": "nobleSwap-contracts",
   "version": "1.0.0",
-  "description": "Pancake contracts",
+  "description": "Noble Swap contracts",
   "private": true,
   "workspaces": [
     "projects/**"
   ],
-  "repository": "https://github.com/pancakeswap/pancake-contracts",
-  "author": "PancakeSwap",
+  "repository": "https://github.com/Gauss-Gang/NobleSwap-smart-contracts",
+  "author": "NobleSwap",
   "license": "MIT",
   "scripts": {
     "format:check": "prettier --check 'projects/**/*.{js,ts,sol}'",
