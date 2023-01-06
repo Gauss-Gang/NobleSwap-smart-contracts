@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.6.2;
 
-import "./IPancakeRouter01.sol";
+pragma solidity 0.8.17;
+import './INobleRouter01.sol';
 
-interface IPancakeRouter02 is IPancakeRouter01 {
+
+interface INobleRouter02 is INobleRouter01 {
+
     function removeLiquidityETHSupportingFeeOnTransferTokens(
         address token,
         uint256 liquidity,
@@ -12,6 +14,7 @@ interface IPancakeRouter02 is IPancakeRouter01 {
         address to,
         uint256 deadline
     ) external returns (uint256 amountETH);
+
 
     function removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(
         address token,
@@ -26,6 +29,7 @@ interface IPancakeRouter02 is IPancakeRouter01 {
         bytes32 s
     ) external returns (uint256 amountETH);
 
+
     function swapExactTokensForTokensSupportingFeeOnTransferTokens(
         uint256 amountIn,
         uint256 amountOutMin,
@@ -34,12 +38,14 @@ interface IPancakeRouter02 is IPancakeRouter01 {
         uint256 deadline
     ) external;
 
+
     function swapExactETHForTokensSupportingFeeOnTransferTokens(
         uint256 amountOutMin,
         address[] calldata path,
         address to,
         uint256 deadline
     ) external payable;
+
 
     function swapExactTokensForETHSupportingFeeOnTransferTokens(
         uint256 amountIn,

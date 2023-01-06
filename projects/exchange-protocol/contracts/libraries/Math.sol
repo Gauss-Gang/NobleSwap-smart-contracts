@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity =0.5.16;
+pragma solidity 0.8.17;
+
 
 // a library for performing various math operations
-
 library Math {
+    
     function min(uint256 x, uint256 y) internal pure returns (uint256 z) {
         z = x < y ? x : y;
     }

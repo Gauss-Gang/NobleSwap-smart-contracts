@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.5.0 <0.7.0;
+pragma solidity 0.8.17;
 
-// a library for performing overflow-safe math, courtesy of DappHub (https://github.com/dapphub/ds-math)
 
+// A library for performing overflow-safe math, courtesy of DappHub (https://github.com/dapphub/ds-math)
 library SafeMath {
+
     function add(uint256 x, uint256 y) internal pure returns (uint256 z) {
         require((z = x + y) >= x, "ds-math-add-overflow");
     }

@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.5.0;
+pragma solidity 0.8.17;
 
-interface IPancakeFactory {
+
+interface INobleFactory {
+
     event PairCreated(address indexed token0, address indexed token1, address pair, uint256);
 
     function feeTo() external view returns (address);
