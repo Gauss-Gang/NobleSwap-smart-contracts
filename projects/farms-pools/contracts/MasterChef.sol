@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.6.12;
+pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "bsc-library/contracts/IBEP20.sol";
-import "bsc-library/contracts/SafeBEP20.sol";
-
-import "./CakeToken.sol";
+import "./standard-libs/access/Ownable.sol";
+import "./standard-libs/libraries/SafeMath.sol";
+import "./upgradable-libs/interfaces/IGTS20.sol";
+import "./NobleToken.sol";
 import "./SyrupBar.sol";
 
 // import "@nomiclabs/buidler/console.sol";
