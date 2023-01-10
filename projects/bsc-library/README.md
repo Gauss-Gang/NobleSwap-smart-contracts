@@ -1,9 +1,9 @@
-# BSC Library
+# (GTS) Gauss Token Standard Library
 
-Legacy implementation of BEP20/IBEP20/SafeBEP20.
+Standard implementation of a GTS20 Token with supporting Libraries.
 
 ## Description
 
-This repo contains legacy Solidity implementations for BEP20, IBEP20, and SafeBEP20 as the BSC alternatives to ERC20, IERC20, and SafeERC20.
+This repo contains Solidity implementations for GTS-20 tokens, as the Gauss alternatives to ERC20, BEP-20, TRC-20, SPL, etc.
 
-These contracts **should not be used for new contracts**. Please use [OpenZeppelin contracts and libraries](https://github.com/OpenZeppelin/openzeppelin-contracts) for compatibility with new Solidity versions.
+Please use [OpenZeppelin contracts and libraries](https://github.com/OpenZeppelin/openzeppelin-contracts) for compatibility with new Solidity versions.
