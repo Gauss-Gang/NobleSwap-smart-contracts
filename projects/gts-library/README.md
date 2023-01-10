@@ -1,4 +1,4 @@
-# (GTS) Gauss Token Standard Library
+# (GTS) Gauss-Token-Standard Library
 
 Standard implementation of a GTS20 Token with supporting Libraries.
 
