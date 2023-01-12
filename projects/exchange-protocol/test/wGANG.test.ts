@@ -8,14 +8,12 @@ const tokens = (n) => {
 
 
 describe('wGANG', () => {
-    let wGANG, token, accounts, deployer, receiver, thirdParty // thirdParty == exchange etc
+    let wGANG, accounts, deployer, receiver, thirdParty // thirdParty == exchange etc
 
     beforeEach(async () => {
         const wGANGtoken = await ethers.getContractFactory('wGANG')
-
         wGANG = await wGANGtoken.deploy()
         
-
         accounts = await ethers.getSigners()
         deployer = accounts[0]
         receiver = accounts[1]
@@ -27,12 +25,8 @@ describe('wGANG', () => {
         const symbol = 'wGANG'
         const decimals = 18
         //const totalSupply = tokens(1000000)
-        const nameToken = 'GTS20'
-        const symbolToken = 'GTS20'
-        const totalSupplyToken = tokens(100000)
 
         it('has correct name', async () => {
-            console.log(await token.totalSupply())
             expect(await wGANG.name()).to.equal(name)
         })
 
