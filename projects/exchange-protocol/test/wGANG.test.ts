@@ -59,9 +59,12 @@ describe('wGANG', () => {
         let amount, transaction, result
 
         describe('Success', () => {
-
+            
             beforeEach(async () => {
                 amount = ethers.utils.parseEther("5.0")
+                transaction = await wGANG.connect(deployer).approve(deployer.address, amount)
+                await transaction.wait()
+                
                 transaction = await wGANG.connect(deployer).transfer(receiver.address, amount)
                 result = await transaction.wait()
             })
@@ -70,6 +73,26 @@ describe('wGANG', () => {
                 expect(Number(await wGANG.balanceOf(deployer.address))).to.equal(Number(amount))
                 expect(Number(await wGANG.balanceOf(receiver.address))).to.equal(Number(amount))
             })
+
+            it('emits a transfer event', async () => {
+                expect(await result.events[0].args.src).to.equal(deployer.address);
+                expect(await result.events[0].args.dst).to.equal(receiver.address);
+                expect(await result.events[0].args.wad).to.equal(amount);
+            })
+
         })
+
+        describe('Failure', () => {
+            it('rejects insufficient balances', async () => {
+              const invalidAmount = ethers.utils.parseEther("100000000.0")
+              await expect(wGANG.connect(deployer).transfer(receiver.address, invalidAmount)).to.be.reverted
+            })
+      
+            it('rejects invalid recipent', async () => {
+              const amount = ethers.utils.parseEther("100.0")
+              await expect(wGANG.connect(deployer).transfer('0x0000000000000000000000000000000000000000', amount)).to.be.reverted
+            })
+      
+          })
     })
 }) 
