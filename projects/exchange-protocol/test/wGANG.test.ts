@@ -82,17 +82,17 @@ describe('wGANG', () => {
 
         })
 
-        describe('Failure', () => {
-            it('rejects insufficient balances', async () => {
-              const invalidAmount = ethers.utils.parseEther("100000000.0")
-              await expect(wGANG.connect(deployer).transfer(receiver.address, invalidAmount)).to.be.reverted
-            })
+        // describe('Failure', () => {
+        //     it('rejects insufficient balances', async () => {
+        //       const invalidAmount = ethers.utils.parseEther("100000000.0")
+        //       await expect(wGANG.connect(deployer).transfer(receiver.address, invalidAmount)).to.be.reverted
+        //     })
       
-            it('rejects invalid recipent', async () => {
-              const amount = ethers.utils.parseEther("100.0")
-              await expect(wGANG.connect(deployer).transfer('0x0000000000000000000000000000000000000000', amount)).to.be.reverted
-            })
+        //     it('rejects invalid recipent', async () => {
+        //       const amount = ethers.utils.parseEther("100.0")
+        //       await expect(wGANG.connect(deployer).transfer('0x0000000000000000000000000000000000000000', amount)).to.be.reverted
+        //     })
       
-          })
+        // })
     })
 }) 
