@@ -10,7 +10,7 @@ import "../libraries/Address.sol";
 
 
 
-// Implementation of the IGTS20 Interface, using Context, Pausable, Ownable, and Snapshot Extenstions.
+// Implementation of the IGTS20 Interface, using Context, Pausable, Ownable, and Snapshot Extenstions. (NOT MINTABLE)
 contract GTS20 is Initializable, Context, IGTS20, Pausable, Ownable {
     
     // Dev-Note: Solidity 0.8.0 added built-in support for checked math, therefore the "SafeMath" library is no longer needed.

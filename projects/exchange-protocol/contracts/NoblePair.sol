@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >0.5.16;
+pragma solidity =0.5.16;
 
 import './interfaces/INoblePair.sol';
 import './NobleGTS20.sol';

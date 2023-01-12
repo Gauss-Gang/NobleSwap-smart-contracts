@@ -79,6 +79,13 @@ contract NobleToken is Initializable, GTS20, GTS20Snapshot, UUPSUpgradeable {
         return id;
     }
 
+
+    // Creates `_amount` token to `_to`. Can only be called by the owner (MasterChef).
+    function mint(address _to, uint256 _amount) public onlyOwner {
+        _mint(_to, _amount);
+        _moveDelegates(address(0), _delegates[_to], _amount);
+    }
+
     
     // Returns the current "votes" balance for `account`
     function getCurrentVotes(address account) external view returns (uint256) {

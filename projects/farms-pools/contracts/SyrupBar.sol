@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.6.12;
+pragma solidity 0.8.17;
 
-import "bsc-library/contracts/BEP20.sol";
-import "./CakeToken.sol";
+import "./standard-libs/contracts/GTS20.sol";
+import "./NobleToken.sol";
+
 
 // SyrupBar with Governance.
-contract SyrupBar is BEP20("SyrupBar Token", "SYRUP") {
+contract SyrupBar is GTS20("SyrupBar Token", "SYRUP") {
+
     /// @dev Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
@@ -17,20 +19,20 @@ contract SyrupBar is BEP20("SyrupBar Token", "SYRUP") {
         _moveDelegates(_delegates[_from], address(0), _amount);
     }
 
-    // The CAKE TOKEN!
-    CakeToken public cake;
+    // The NOBLE Token Address.
+    NobleToken public noble;
 
-    constructor(CakeToken _cake) public {
-        cake = _cake;
+    constructor(NobleToken _noble) public {
+        noble = _noble;
     }
 
-    // Safe cake transfer function, just in case if rounding error causes pool to not have enough CAKEs.
-    function safeCakeTransfer(address _to, uint256 _amount) public onlyOwner {
-        uint256 cakeBal = cake.balanceOf(address(this));
-        if (_amount > cakeBal) {
-            cake.transfer(_to, cakeBal);
+    // Safe NOBLE transfer function, just in case if rounding error causes pool to not have enough NOBLEs.
+    function safeNobleTransfer(address _to, uint256 _amount) public onlyOwner {
+        uint256 nobleBal = noble.balanceOf(address(this));
+        if (_amount > nobleBal) {
+            noble.transfer(_to, nobleBal);
         } else {
-            cake.transfer(_to, _amount);
+            noble.transfer(_to, _amount);
         }
     }
 
@@ -114,9 +116,9 @@ contract SyrupBar is BEP20("SyrupBar Token", "SYRUP") {
         bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
 
         address signatory = ecrecover(digest, v, r, s);
-        require(signatory != address(0), "CAKE::delegateBySig: invalid signature");
-        require(nonce == nonces[signatory]++, "CAKE::delegateBySig: invalid nonce");
-        require(now <= expiry, "CAKE::delegateBySig: signature expired");
+        require(signatory != address(0), "NOBLE::delegateBySig: invalid signature");
+        require(nonce == nonces[signatory]++, "NOBLE::delegateBySig: invalid nonce");
+        require(now <= expiry, "NOBLE::delegateBySig: signature expired");
         return _delegate(signatory, delegatee);
     }
 
@@ -138,7 +140,7 @@ contract SyrupBar is BEP20("SyrupBar Token", "SYRUP") {
      * @return The number of votes the account had as of the given block
      */
     function getPriorVotes(address account, uint256 blockNumber) external view returns (uint256) {
-        require(blockNumber < block.number, "CAKE::getPriorVotes: not yet determined");
+        require(blockNumber < block.number, "NOBLE::getPriorVotes: not yet determined");
 
         uint32 nCheckpoints = numCheckpoints[account];
         if (nCheckpoints == 0) {
@@ -173,7 +175,7 @@ contract SyrupBar is BEP20("SyrupBar Token", "SYRUP") {
 
     function _delegate(address delegator, address delegatee) internal {
         address currentDelegate = _delegates[delegator];
-        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying CAKEs (not scaled);
+        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying NOBLEs (not scaled);
         _delegates[delegator] = delegatee;
 
         emit DelegateChanged(delegator, currentDelegate, delegatee);
@@ -211,7 +213,7 @@ contract SyrupBar is BEP20("SyrupBar Token", "SYRUP") {
         uint256 oldVotes,
         uint256 newVotes
     ) internal {
-        uint32 blockNumber = safe32(block.number, "CAKE::_writeCheckpoint: block number exceeds 32 bits");
+        uint32 blockNumber = safe32(block.number, "NOBLE::_writeCheckpoint: block number exceeds 32 bits");
 
         if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
             checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;

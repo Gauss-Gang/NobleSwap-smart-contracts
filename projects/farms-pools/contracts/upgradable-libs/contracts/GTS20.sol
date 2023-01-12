@@ -170,6 +170,47 @@ contract GTS20 is Initializable, Context, IGTS20, Pausable, Ownable {
         
         emit Transfer(sender, recipient, amount);
     }
+
+
+    // Creates `amount` tokens and assigns them to `msg.sender`, increasing the total supply. (msg.sender` must be the token owner)
+    function mint(uint256 amount) public onlyOwner returns (bool) {
+        _mint(_msgSender(), amount);
+        return true;
+    }
+
+
+    // Internal function to handle token minting. Emits a {Transfer} event 
+    function _mint(address account, uint256 amount) internal {
+        require(account != address(0), "GTS20: can not mint to the zero address");
+
+        _totalSupply = _totalSupply + amount;
+        _balances[account] = _balances[account] + amount;
+        emit Transfer(address(0), account, amount);
+    }
+
+
+    // Internal function to that destroys `amount` tokens from `account`, reducing the total supply. Emits a {Transfer} event.
+    // NOTE: Must create public function in token contract to allow burning.
+    function _burn(address account, uint256 amount) internal {
+        require(account != address(0), "GTS20: burn from the zero address");
+        require(amount <= _balances[account], "GTS20: burn amount exceeds balance");
+
+        _balances[account] = _balances[account] - amount;
+        _totalSupply = _totalSupply - amount;
+        emit Transfer(account, address(0), amount);
+    }
+
+
+    // Destroys `amount` tokens from `account`.`amount` is then deducted from the caller's allowance.
+    // NOTE: Must create public function in token contract to allow burning.
+    function _burnFrom(address account, uint256 amount) internal {
+        _burn(account, amount);
+        _approve(
+            account,
+            _msgSender(),
+            (_allowances[account][_msgSender()] - amount)
+        );
+    }
     
     
     /*  Hook that is called before any transfer of tokens. This includes minting and burning.

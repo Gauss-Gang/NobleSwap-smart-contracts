@@ -4,10 +4,11 @@ pragma solidity 0.8.17;
 
 import "../../upgradable-libs/interfaces/IGTS20.sol";
 import "../utilities/Context.sol";
+import "../access/Ownable.sol";
 
 
 // Implementation of the IGTS20 Interface, using Context
-contract GTS20 is Context, IGTS20 {
+contract GTS20 is Context, IGTS20, Ownable {
 
     // Creates mapping for the collections of balances and allowances.
     mapping(address => uint256) public _balances;
@@ -140,40 +141,44 @@ contract GTS20 is Context, IGTS20 {
     }
  
 
-    // Creates `amount` tokens and assigns them to `account`, increasing the total supply. Emits a {Transfer} event.
-    function _mint(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: mint to the zero address");
-
-        _beforeTokenTransfer(address(0), account, amount);
-
-        _totalSupply += amount;
-        unchecked {
-            // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
-            _balances[account] += amount;
-        }
-        emit Transfer(address(0), account, amount);
-
-        _afterTokenTransfer(address(0), account, amount);
+    // Creates `amount` tokens and assigns them to `msg.sender`, increasing the total supply. (msg.sender` must be the token owner)
+    function mint(uint256 amount) public onlyOwner returns (bool) {
+        _mint(_msgSender(), amount);
+        return true;
     }
 
 
-    // Destroys `amount` tokens from `account`, reducing the total supply. Emits a {Transfer} event.
-    function _burn(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: burn from the zero address");
+    // Internal function to handle token minting. Emits a {Transfer} event 
+    function _mint(address account, uint256 amount) internal {
+        require(account != address(0), "GTS20: can not mint to the zero address");
 
-        _beforeTokenTransfer(account, address(0), amount);
+        _totalSupply = _totalSupply + amount;
+        _balances[account] = _balances[account] + amount;
+        emit Transfer(address(0), account, amount);
+    }
 
-        uint256 accountBalance = _balances[account];
-        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
-        unchecked {
-            _balances[account] = accountBalance - amount;
-            // Overflow not possible: amount <= accountBalance <= totalSupply.
-            _totalSupply -= amount;
-        }
 
+    // Internal function to that destroys `amount` tokens from `account`, reducing the total supply. Emits a {Transfer} event.
+    // NOTE: Must create public function in token contract to allow burning.
+    function _burn(address account, uint256 amount) internal {
+        require(account != address(0), "GTS20: burn from the zero address");
+        require(amount <= _balances[account], "GTS20: burn amount exceeds balance");
+
+        _balances[account] = _balances[account] - amount;
+        _totalSupply = _totalSupply - amount;
         emit Transfer(account, address(0), amount);
+    }
 
-        _afterTokenTransfer(account, address(0), amount);
+
+    // Destroys `amount` tokens from `account`.`amount` is then deducted from the caller's allowance.
+    // NOTE: Must create public function in token contract to allow burning.
+    function _burnFrom(address account, uint256 amount) internal {
+        _burn(account, amount);
+        _approve(
+            account,
+            _msgSender(),
+            (_allowances[account][_msgSender()] - amount)
+        );
     }
 
     
