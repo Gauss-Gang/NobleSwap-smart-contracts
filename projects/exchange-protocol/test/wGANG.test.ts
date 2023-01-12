@@ -18,13 +18,20 @@ describe('wGANG', () => {
         deployer = accounts[0]
         receiver = accounts[1]
         thirdParty = accounts[2]
+
+        const tx = deployer.sendTransaction({
+            to: wGANG.address,
+            value: ethers.utils.parseEther("10.0")
+        })
+        await tx
+        
     })
 
     describe('Deployment', () => {
         const name = 'Wrapped GANG'
         const symbol = 'wGANG'
         const decimals = 18
-        //const totalSupply = tokens(1000000)
+        const totalSupply = ethers.utils.parseEther("10.0")
 
         it('has correct name', async () => {
             expect(await wGANG.name()).to.equal(name)
@@ -38,27 +45,31 @@ describe('wGANG', () => {
             expect(await wGANG.decimals()).to.equal(decimals)
         })
 
-        // it('has correct total supply', async () => {
-        //     expect(await wGANG.totalSupply()).to.equal(totalSupply)
-        // })
+        it('has correct total supply', async () => {
+            expect(Number(await wGANG.totalSupply())).to.equal(Number(totalSupply))
+        })
 
+        it('deployer has the total supply', async () => {
+            expect(Number(await wGANG.balanceOf(deployer.address))).to.equal(Number(totalSupply))
+        })
 
     })
 
-    // describe('Sending Tokens', () => {
-    //     let amount, transaction, result
+    describe('Sending Tokens', () => {
+        let amount, transaction, result
 
-    //     describe('Success', () => {
+        describe('Success', () => {
 
-    //         beforeEach(async () => {
-    //             amount = tokens(100)
-    //             transaction = await wGANG.connect(deployer).transfer(receiver.address, amount)
-    //             result = await transaction.wait()
-    //         })
+            beforeEach(async () => {
+                amount = ethers.utils.parseEther("5.0")
+                transaction = await wGANG.connect(deployer).transfer(receiver.address, amount)
+                result = await transaction.wait()
+            })
 
-    //         it('transfers token balances', async () => {
-    //             expect(await wGANG.balanceOf)
-    //         })
-    //     })
-    // })
+            it('transfers token balances', async () => {
+                expect(Number(await wGANG.balanceOf(deployer.address))).to.equal(Number(amount))
+                expect(Number(await wGANG.balanceOf(receiver.address))).to.equal(Number(amount))
+            })
+        })
+    })
 }) 
