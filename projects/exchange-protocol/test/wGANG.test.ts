@@ -1,9 +1,13 @@
-const { expect } = require('chai');
-const { ethers } = require('hardhat');
+import { expect, assert } from "chai";
+import hre from "hardhat";
+import { solidity } from "ethereum-waffle";
+
+const { ethers } = require('hardhat')
+
 const { BN, constants, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
 
 const tokens = (n) => {
-    return ethers.utils.parseUnits(n.toString(), 'ether')
+    return ethers.utils.parseEther(n.toString())
 }
 
 
@@ -18,10 +22,11 @@ describe('wGANG', () => {
         deployer = accounts[0]
         receiver = accounts[1]
         thirdParty = accounts[2]
-
+        
+        // Deployer sends 10 GANG and receives 10 wGANG
         const tx = deployer.sendTransaction({
             to: wGANG.address,
-            value: ethers.utils.parseEther("10.0")
+            value: tokens(100)
         })
         await tx
         
@@ -31,7 +36,7 @@ describe('wGANG', () => {
         const name = 'Wrapped GANG'
         const symbol = 'wGANG'
         const decimals = 18
-        const totalSupply = ethers.utils.parseEther("10.0")
+        const totalSupply = tokens(100)
 
         it('has correct name', async () => {
             expect(await wGANG.name()).to.equal(name)
@@ -49,7 +54,7 @@ describe('wGANG', () => {
             expect(Number(await wGANG.totalSupply())).to.equal(Number(totalSupply))
         })
 
-        it('deployer has the total supply', async () => {
+        it('deployer has the right amount of tokens', async () => {
             expect(Number(await wGANG.balanceOf(deployer.address))).to.equal(Number(totalSupply))
         })
 
@@ -61,7 +66,7 @@ describe('wGANG', () => {
         describe('Success', () => {
             
             beforeEach(async () => {
-                amount = ethers.utils.parseEther("5.0")
+                amount = tokens(5)
                 transaction = await wGANG.connect(deployer).approve(deployer.address, amount)
                 await transaction.wait()
                 
@@ -70,29 +75,130 @@ describe('wGANG', () => {
             })
 
             it('transfers token balances', async () => {
-                expect(Number(await wGANG.balanceOf(deployer.address))).to.equal(Number(amount))
+                expect(Number(await wGANG.balanceOf(deployer.address))).to.equal(Number(tokens(95)))
                 expect(Number(await wGANG.balanceOf(receiver.address))).to.equal(Number(amount))
             })
 
             it('emits a transfer event', async () => {
-                expect(await result.events[0].args.src).to.equal(deployer.address);
-                expect(await result.events[0].args.dst).to.equal(receiver.address);
-                expect(await result.events[0].args.wad).to.equal(amount);
+                const event = result.events[0]
+                expect(event.event).to.equal('Transfer')
+                
+            })
+
+            it('has right transfer params', async () => {
+                const event = result.events[0]
+                const args = event.args
+                expect(args.from).to.equal(deployer.address)
+                expect(args.to).to.equal(receiver.address)
+                expect(args.value).to.equal(amount)
             })
 
         })
 
-        // describe('Failure', () => {
-        //     it('rejects insufficient balances', async () => {
-        //       const invalidAmount = ethers.utils.parseEther("100000000.0")
-        //       await expect(wGANG.connect(deployer).transfer(receiver.address, invalidAmount)).to.be.reverted
-        //     })
+        describe('Failure', () => {
+            it('rejects insufficient balances', async () => {
+              const invalidAmount = tokens(100000000)
+              await expect(wGANG.connect(deployer).transfer(receiver.address, invalidAmount)).to.be.reverted
+            })
       
-        //     it('rejects invalid recipent', async () => {
-        //       const amount = ethers.utils.parseEther("100.0")
-        //       await expect(wGANG.connect(deployer).transfer('0x0000000000000000000000000000000000000000', amount)).to.be.reverted
-        //     })
+            it('rejects transfer without allowance', async () => {
+              const amount = tokens(1)
+              await expect(wGANG.connect(deployer).transfer('0x0000000000000000000000000000000000000000', amount)).to.be.reverted
+            })
       
-        // })
+        })
     })
+
+    describe('Approving Tokens', () => {
+        let amount, transaction, result
+
+        beforeEach(async () => {
+           amount = tokens(5)
+           transaction = await wGANG.connect(deployer).approve(thirdParty.address, amount)
+           result = await transaction.wait()
+        })
+
+        describe('Success', () => {
+            it('allocates an allowance for delegated token spending', async () => {
+                expect(await wGANG.allowance(deployer.address, thirdParty.address)).to.equal(amount)
+            })
+
+            it('emits an approval event', async () => {
+                const event = result.events[0]
+                expect(event.event).to.equal('Approval')
+            })
+
+            it('has right approval params', async () => {
+                const event = result.events[0]
+                const args = event.args
+                expect(args.owner).to.equal(deployer.address)
+                expect(args.spender).to.equal(thirdParty.address)
+                expect(args.value).to.equal(amount)
+            })
+        })
+
+    })
+
+    describe('Delegated Token Transfers', () => {
+        let amount, transaction, result
+
+        beforeEach(async () => {
+            amount = tokens(10)
+            transaction = await wGANG.connect(deployer).approve(thirdParty.address, amount)
+            result = await transaction.wait()
+        })
+
+        describe('Success', () => {
+            beforeEach(async () => {
+                transaction = await wGANG.connect(thirdParty).transferFrom(deployer.address, receiver.address, amount)
+                result = await transaction.wait()
+            })
+
+            it('transfers token balances', async () => {
+                expect(await wGANG.balanceOf(deployer.address)).to.be.equal(tokens(90))
+                expect(await wGANG.balanceOf(receiver.address)).to.be.equal(amount)
+            })
+
+            it('resets the allowance', async () => {
+                expect(await wGANG.allowance(deployer.address, thirdParty.address)).to.be.equal(0)
+            })
+
+            it('emits a approval event', async () => {
+                const event = result.events[0]
+                expect(event.event).to.equal('Approval')
+            })
+
+            it('has right approval params', async () => {
+                const event = result.events[0]
+                const args = event.args
+                expect(args.owner).to.equal(deployer.address)
+                expect(args.spender).to.equal(thirdParty.address)
+                expect(args.value).to.equal(0)
+            })
+
+            it('emits a transfer event', async () => {
+                const event = result.events[1]
+                expect(event.event).to.equal('Transfer')
+            })
+            
+            it('has right transfer params', async () => {
+                const event = result.events[1]
+                const args = event.args
+                expect(args.from).to.equal(deployer.address)
+                expect(args.to).to.equal(receiver.address)
+                expect(args.value).to.equal(amount)
+            })
+
+        })
+
+        describe('Failure', () => {
+            it('cannot transfer invalid token amount', async () => {
+                const invalidAmount = tokens(10000000)
+                await expect(wGANG.connect(thirdParty).transferFrom(deployer.address, receiver.address, invalidAmount)).to.be.reverted
+            })
+            
+        })
+
+    })
+
 }) 
