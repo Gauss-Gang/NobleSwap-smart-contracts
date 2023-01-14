@@ -4,8 +4,7 @@ pragma solidity 0.8.17;
 import "./standard-libs/access/Ownable.sol";
 import "./standard-libs/interfaces/IWGANG.sol";
 import "./standard-libs/libraries/SafeMath.sol";
-import "./upgradable-libs/interfaces/IGTS20.sol";
-
+import "./standard-libs/interfaces/IGTS20.sol";
 
 
 contract GangStaking is Ownable {

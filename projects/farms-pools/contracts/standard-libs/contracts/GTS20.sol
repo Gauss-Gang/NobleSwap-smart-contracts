@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.17;
 
-import "../../upgradable-libs/interfaces/IGTS20.sol";
+import "../interfaces/IGTS20.sol";
 import "../utilities/Context.sol";
 import "../access/Ownable.sol";
 

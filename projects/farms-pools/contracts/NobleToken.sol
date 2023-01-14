@@ -16,16 +16,21 @@
 pragma solidity 0.8.17;
 import "./upgradable-libs/utilities/Initializable.sol";
 import "./upgradable-libs/utilities/UUPSUpgradeable.sol";
-import "./upgradable-libs/contracts/GTS20.sol";
-import "./upgradable-libs/contracts/GTS20Snapshot.sol";
-
+import "./upgradable-libs/contracts/GTS20_UPG.sol";
+import "./upgradable-libs/contracts/GTS20Snapshot_UPG.sol";
 
 
 /*  
     Noble Token (NOBLE)
 */
-contract NobleToken is Initializable, GTS20, GTS20Snapshot, UUPSUpgradeable {
+contract NobleToken is Initializable, GTS20_UPG, GTS20Snapshot_UPG, UUPSUpgradeable {
 
+    // A checkpoint for marking number of votes from a given block.
+    struct Checkpoint {
+        uint32 fromBlock;
+        uint256 votes;
+    }
+    
     // A record of the Delegates for each account.
     mapping (address => address) internal _delegates;
 
@@ -37,12 +42,6 @@ contract NobleToken is Initializable, GTS20, GTS20Snapshot, UUPSUpgradeable {
 
     // A record of states for signing / validating signatures
     mapping (address => uint) public nonces;
-
-    // A checkpoint for marking number of votes from a given block.
-    struct Checkpoint {
-        uint32 fromBlock;
-        uint256 votes;
-    }
 
     // The EIP-712 typehash for the contract's domain
     bytes32 public DOMAIN_TYPEHASH;
@@ -240,7 +239,7 @@ contract NobleToken is Initializable, GTS20, GTS20Snapshot, UUPSUpgradeable {
 
 
     // Internal function; overriden to allow GTS20Snapshot to update values before a Transfer event.
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override(GTS20, GTS20Snapshot) {
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override(GTS20_UPG, GTS20Snapshot_UPG) {
         super._beforeTokenTransfer(from, to, amount);
     }
 

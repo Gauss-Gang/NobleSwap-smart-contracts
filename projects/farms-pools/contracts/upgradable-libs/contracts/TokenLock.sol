@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity 0.8.17;
-import "../utilities/Context.sol";
-import "../access/Ownable.sol";
-import "../interfaces/IGTS20.sol";
+import "../utilities/Context_UPG.sol";
+import "../access/Ownable_UPG.sol";
+import "../interfaces/IGTS20_UPG.sol";
 import "../libraries/Address.sol";
 
 
 
 // Creates a Time Lock contract for tokens transferred to it, releasing tokens after the specified "_releaseTime".
-contract TokenLock is Context {
+contract TokenLock is Context_UPG {
     
     using Address for address;
 
     // GTS20 basic token contract being held.
-    IGTS20 private immutable _token;
+    IGTS20_UPG private immutable _token;
     
     // Sender of tokens to be Time Locked.
     address private immutable _sender;
@@ -30,7 +30,7 @@ contract TokenLock is Context {
 
 
     // The constructor sets internal the values of _token, _beneficiary, and _releaseTime to the variables passed in when called externally.
-    constructor(IGTS20 token_, address sender_, address beneficiary_, uint256 amount_, uint256 releaseTime_) {
+    constructor(IGTS20_UPG token_, address sender_, address beneficiary_, uint256 amount_, uint256 releaseTime_) {
         _token = token_;
         _sender = sender_;
         _beneficiary = beneficiary_;
@@ -46,7 +46,7 @@ contract TokenLock is Context {
 
 
     // Returns the token being held.
-    function token() public view returns (IGTS20) {
+    function token() public view returns (IGTS20_UPG) {
         return _token;
     }
     

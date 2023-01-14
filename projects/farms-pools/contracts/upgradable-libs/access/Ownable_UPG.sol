@@ -2,12 +2,12 @@
 
 pragma solidity 0.8.17;
 import "../utilities/Initializable.sol";
-import "../utilities/Context.sol";
+import "../utilities/Context_UPG.sol";
 
 
 
 // Provides a basic access control mechanism, where an account '_owner' can be granted exclusive access to specific functions by using the modifier `onlyOwner`.
-abstract contract Ownable is Initializable, Context {
+abstract contract Ownable_UPG is Initializable, Context_UPG {
     
     address private _owner;
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);

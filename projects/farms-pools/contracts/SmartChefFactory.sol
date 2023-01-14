@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.6.12;
+pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "bsc-library/contracts/IBEP20.sol";
-
+import "./standard-libs/access/Ownable.sol";
+import "./standard-libs/interfaces/IGTS20.sol";
 import "./SmartChefInitializable.sol";
+
 
 contract SmartChefFactory is Ownable {
     event NewSmartChefContract(address indexed smartChef);
 
-    constructor() public {
-        //
-    }
+    constructor() {}
 
     /*
      * @notice Deploy the pool
@@ -25,8 +23,8 @@ contract SmartChefFactory is Ownable {
      * @return address of new smart chef contract
      */
     function deployPool(
-        IBEP20 _stakedToken,
-        IBEP20 _rewardToken,
+        IGTS20 _stakedToken,
+        IGTS20 _rewardToken,
         uint256 _rewardPerBlock,
         uint256 _startBlock,
         uint256 _bonusEndBlock,

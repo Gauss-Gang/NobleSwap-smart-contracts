@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity 0.8.17;
-import "./GTS20.sol";
-import "../access/Ownable.sol";
+import "./GTS20_UPG.sol";
+import "../access/Ownable_UPG.sol";
 import "../libraries/Arrays.sol";
 import "../libraries/Counters.sol";
 
@@ -15,7 +15,7 @@ import "../libraries/Counters.sol";
             id. To get the balance of an account at the time of a snapshot, call the {balanceOfAt} function with the snapshot id
             and the account address.
 */
-abstract contract GTS20Snapshot is GTS20 {
+abstract contract GTS20Snapshot_UPG is GTS20_UPG {
 
     using Arrays for uint256[];
     using Counters for Counters.Counter;    

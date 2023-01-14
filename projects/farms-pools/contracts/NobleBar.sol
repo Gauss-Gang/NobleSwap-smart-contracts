@@ -5,10 +5,17 @@ import "./standard-libs/contracts/GTS20.sol";
 import "./NobleToken.sol";
 
 
-// SyrupBar with Governance.
-contract SyrupBar is GTS20("SyrupBar Token", "SYRUP") {
+/*  NobleBar with Governance.
+    
+        Copied and modified from YAM code:
+            https://github.com/yam-finance/yam-protocol/blob/master/contracts/token/YAMGovernanceStorage.sol
+            https://github.com/yam-finance/yam-protocol/blob/master/contracts/token/YAMGovernance.sol
+        Which is copied and modified from COMPOUND:
+            https://github.com/compound-finance/compound-protocol/blob/master/contracts/Governance/Comp.sol
+*/
+contract NobleBar is GTS20("NobleBar Token", "xNOBLE") {
 
-    /// @dev Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
+    // Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
@@ -19,94 +26,84 @@ contract SyrupBar is GTS20("SyrupBar Token", "SYRUP") {
         _moveDelegates(_delegates[_from], address(0), _amount);
     }
 
-    // The NOBLE Token Address.
+
+    // The NOBLE Token Object.
     NobleToken public noble;
 
-    constructor(NobleToken _noble) public {
+    constructor(NobleToken _noble) {
         noble = _noble;
     }
 
-    // Safe NOBLE transfer function, just in case if rounding error causes pool to not have enough NOBLEs.
+    // Safe NOBLE transfer function, just in case a rounding error causes pool to not have enough NOBLEs.
     function safeNobleTransfer(address _to, uint256 _amount) public onlyOwner {
         uint256 nobleBal = noble.balanceOf(address(this));
+        
         if (_amount > nobleBal) {
             noble.transfer(_to, nobleBal);
-        } else {
+        } 
+        
+        else {
             noble.transfer(_to, _amount);
         }
     }
 
-    // Copied and modified from YAM code:
-    // https://github.com/yam-finance/yam-protocol/blob/master/contracts/token/YAMGovernanceStorage.sol
-    // https://github.com/yam-finance/yam-protocol/blob/master/contracts/token/YAMGovernance.sol
-    // Which is copied and modified from COMPOUND:
-    // https://github.com/compound-finance/compound-protocol/blob/master/contracts/Governance/Comp.sol
 
-    /// @dev A record of each accounts delegate
-    mapping(address => address) internal _delegates;
-
-    /// @dev A checkpoint for marking number of votes from a given block
+    // A checkpoint for marking number of votes from a given block
     struct Checkpoint {
         uint32 fromBlock;
         uint256 votes;
     }
 
-    /// @dev A record of votes checkpoints for each account, by index
+    // A record of each accounts delegate
+    mapping(address => address) internal _delegates;
+
+    // A record of votes checkpoints for each account, by index
     mapping(address => mapping(uint32 => Checkpoint)) public checkpoints;
 
-    /// @dev The number of checkpoints for each account
+    // The number of checkpoints for each account
     mapping(address => uint32) public numCheckpoints;
 
-    /// @dev The EIP-712 typehash for the contract's domain
+    // A record of states for signing / validating signatures
+    mapping(address => uint256) public nonces;
+
+    // The EIP-712 typehash for the contract's domain
     bytes32 public constant DOMAIN_TYPEHASH =
         keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)");
 
-    /// @dev The EIP-712 typehash for the delegation struct used by the contract
+    // The EIP-712 typehash for the delegation struct used by the contract
     bytes32 public constant DELEGATION_TYPEHASH =
         keccak256("Delegation(address delegatee,uint256 nonce,uint256 expiry)");
 
-    /// @dev A record of states for signing / validating signatures
-    mapping(address => uint256) public nonces;
-
-    /// @dev An event thats emitted when an account changes its delegate
+    // An event thats emitted when an account changes its delegate
     event DelegateChanged(address indexed delegator, address indexed fromDelegate, address indexed toDelegate);
 
-    /// @dev An event thats emitted when a delegate account's vote balance changes
+    // An event thats emitted when a delegate account's vote balance changes
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
 
-    /**
-     * @dev Delegate votes from `msg.sender` to `delegatee`
-     * @param delegator The address to get delegatee for
-     */
+
+    // Delegate votes from `msg.sender` to `delegatee`.
     function delegates(address delegator) external view returns (address) {
         return _delegates[delegator];
     }
 
-    /**
-     * @dev Delegate votes from `msg.sender` to `delegatee`
-     * @param delegatee The address to delegate votes to
-     */
+
+    // Delegate votes from `msg.sender` to `delegatee`.
     function delegate(address delegatee) external {
         return _delegate(msg.sender, delegatee);
     }
 
-    /**
-     * @dev Delegates votes from signatory to `delegatee`
-     * @param delegatee The address to delegate votes to
-     * @param nonce The contract state required to match the signature
-     * @param expiry The time at which to expire the signature
-     * @param v The recovery byte of the signature
-     * @param r Half of the ECDSA signature pair
-     * @param s Half of the ECDSA signature pair
-     */
-    function delegateBySig(
-        address delegatee,
-        uint256 nonce,
-        uint256 expiry,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external {
+
+    /*  Delegates votes from signatory to `delegatee`
+            
+            @param delegatee The address to delegate votes to
+            @param nonce The contract state required to match the signature
+            @param expiry The time at which to expire the signature
+            @param v The recovery byte of the signature
+            @param r Half of the ECDSA signature pair
+            @param s Half of the ECDSA signature pair
+    */
+    function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s) external {
+        
         bytes32 domainSeparator = keccak256(
             abi.encode(DOMAIN_TYPEHASH, keccak256(bytes(name())), getChainId(), address(this))
         );
@@ -118,27 +115,25 @@ contract SyrupBar is GTS20("SyrupBar Token", "SYRUP") {
         address signatory = ecrecover(digest, v, r, s);
         require(signatory != address(0), "NOBLE::delegateBySig: invalid signature");
         require(nonce == nonces[signatory]++, "NOBLE::delegateBySig: invalid nonce");
-        require(now <= expiry, "NOBLE::delegateBySig: signature expired");
+        require(block.timestamp <= expiry, "NOBLE::delegateBySig: signature expired");
         return _delegate(signatory, delegatee);
     }
 
-    /**
-     * @dev Gets the current votes balance for `account`
-     * @param account The address to get votes balance
-     * @return The number of current votes for `account`
-     */
+
+    // Gets the current votes balance for `account`.
     function getCurrentVotes(address account) external view returns (uint256) {
         uint32 nCheckpoints = numCheckpoints[account];
         return nCheckpoints > 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
     }
 
-    /**
-     * @dev Determine the prior number of votes for an account as of a block number
-     * @dev Block number must be a finalized block or else this function will revert to prevent misinformation.
-     * @param account The address of the account to check
-     * @param blockNumber The block number to get the vote balance at
-     * @return The number of votes the account had as of the given block
-     */
+
+    /*  Determine the prior number of votes for an account as of a block number
+            NOTE: Block number must be a finalized block or else this function will revert to prevent misinformation.
+            
+            @param account The address of the account to check
+            @param blockNumber The block number to get the vote balance at
+            @return The number of votes the account had as of the given block
+    */
     function getPriorVotes(address account, uint256 blockNumber) external view returns (uint256) {
         require(blockNumber < block.number, "NOBLE::getPriorVotes: not yet determined");
 
@@ -162,16 +157,22 @@ contract SyrupBar is GTS20("SyrupBar Token", "SYRUP") {
         while (upper > lower) {
             uint32 center = upper - (upper - lower) / 2; // ceil, avoiding overflow
             Checkpoint memory cp = checkpoints[account][center];
+            
             if (cp.fromBlock == blockNumber) {
                 return cp.votes;
-            } else if (cp.fromBlock < blockNumber) {
+            }
+            
+            else if (cp.fromBlock < blockNumber) {
                 lower = center;
-            } else {
+            }
+            
+            else {
                 upper = center - 1;
             }
         }
         return checkpoints[account][lower].votes;
     }
+
 
     function _delegate(address delegator, address delegatee) internal {
         address currentDelegate = _delegates[delegator];
@@ -183,17 +184,16 @@ contract SyrupBar is GTS20("SyrupBar Token", "SYRUP") {
         _moveDelegates(currentDelegate, delegatee, delegatorBalance);
     }
 
-    function _moveDelegates(
-        address srcRep,
-        address dstRep,
-        uint256 amount
-    ) internal {
+
+    function _moveDelegates(address srcRep, address dstRep, uint256 amount) internal {
+        
         if (srcRep != dstRep && amount > 0) {
+            
             if (srcRep != address(0)) {
                 // decrease old representative
                 uint32 srcRepNum = numCheckpoints[srcRep];
                 uint256 srcRepOld = srcRepNum > 0 ? checkpoints[srcRep][srcRepNum - 1].votes : 0;
-                uint256 srcRepNew = srcRepOld.sub(amount);
+                uint256 srcRepNew = srcRepOld - amount;
                 _writeCheckpoint(srcRep, srcRepNum, srcRepOld, srcRepNew);
             }
 
@@ -201,23 +201,21 @@ contract SyrupBar is GTS20("SyrupBar Token", "SYRUP") {
                 // increase new representative
                 uint32 dstRepNum = numCheckpoints[dstRep];
                 uint256 dstRepOld = dstRepNum > 0 ? checkpoints[dstRep][dstRepNum - 1].votes : 0;
-                uint256 dstRepNew = dstRepOld.add(amount);
+                uint256 dstRepNew = dstRepOld +  amount;
                 _writeCheckpoint(dstRep, dstRepNum, dstRepOld, dstRepNew);
             }
         }
     }
 
-    function _writeCheckpoint(
-        address delegatee,
-        uint32 nCheckpoints,
-        uint256 oldVotes,
-        uint256 newVotes
-    ) internal {
+
+    function _writeCheckpoint(address delegatee, uint32 nCheckpoints, uint256 oldVotes, uint256 newVotes) internal {
         uint32 blockNumber = safe32(block.number, "NOBLE::_writeCheckpoint: block number exceeds 32 bits");
 
         if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
             checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
-        } else {
+        }
+        
+        else {
             checkpoints[delegatee][nCheckpoints] = Checkpoint(blockNumber, newVotes);
             numCheckpoints[delegatee] = nCheckpoints + 1;
         }
@@ -225,12 +223,14 @@ contract SyrupBar is GTS20("SyrupBar Token", "SYRUP") {
         emit DelegateVotesChanged(delegatee, oldVotes, newVotes);
     }
 
+
     function safe32(uint256 n, string memory errorMessage) internal pure returns (uint32) {
         require(n < 2**32, errorMessage);
         return uint32(n);
     }
 
-    function getChainId() internal pure returns (uint256) {
+
+    function getChainId() internal view returns (uint256) {
         uint256 chainId;
         assembly {
             chainId := chainid()

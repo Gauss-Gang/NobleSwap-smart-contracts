@@ -13,7 +13,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 pragma solidity 0.8.17;
-import "./upgradable-libs/interfaces/IGTS20.sol";
+import "./standard-libs/interfaces/IGTS20.sol";
 
 
 // Wrapped GANG contract for the native Gauss GANG coin. 
@@ -85,7 +85,9 @@ contract wGANG is IGTS20 {
 
     // Transfers an amount 'wad' of tokens from the 'src' address to the 'dst' address. Emits a {Transfer} event.
     function transferFrom(address src, address dst, uint256 wad)  public override returns (bool) {
-        require(wad <= balanceOf[src], "GTS20: transfer amount exceeds balance");        
+        require(wad <= balanceOf[src], "GTS20: transfer amount exceeds balance");
+        require(wad <= allowance[src][msg.sender], "GTS20: transfer amount exceeds allowance");
+
         
         if (src != msg.sender && allowance[src][msg.sender] != type(uint).max) {
             _approve(src, msg.sender, (allowance[src][msg.sender] - wad));

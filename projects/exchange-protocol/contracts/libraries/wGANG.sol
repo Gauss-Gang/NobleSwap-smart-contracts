@@ -89,9 +89,7 @@ contract wGANG is IGTS20 {
         require(wad <= allowance[src][msg.sender], "GTS20: transfer amount exceeds allowance");
         
         if (src != msg.sender && allowance[src][msg.sender] != type(uint).max) {
-            unchecked {
                 _approve(src, msg.sender, (allowance[src][msg.sender] - wad));
-            }
         }        
 
         unchecked {

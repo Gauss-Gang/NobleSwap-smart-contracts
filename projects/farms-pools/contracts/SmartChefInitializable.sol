@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.6.12;
+pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "./standard-libs/access/Ownable.sol";
+import "./standard-libs/libraries/SafeMath.sol";
+import "./standard-libs/interfaces/IGTS20.sol";
+import "./standard-libs/utilities/ReentrancyGuard.sol";
 
-import "bsc-library/contracts/IBEP20.sol";
-import "bsc-library/contracts/SafeBEP20.sol";
 
 contract SmartChefInitializable is Ownable, ReentrancyGuard {
     using SafeMath for uint256;
-    using SafeBEP20 for IBEP20;
 
     // The address of the smart chef factory
     address public SMART_CHEF_FACTORY;
@@ -43,10 +41,10 @@ contract SmartChefInitializable is Ownable, ReentrancyGuard {
     uint256 public PRECISION_FACTOR;
 
     // The reward token
-    IBEP20 public rewardToken;
+    IGTS20 public rewardToken;
 
     // The staked token
-    IBEP20 public stakedToken;
+    IGTS20 public stakedToken;
 
     // Info of each user that stakes tokens (stakedToken)
     mapping(address => UserInfo) public userInfo;
@@ -65,7 +63,7 @@ contract SmartChefInitializable is Ownable, ReentrancyGuard {
     event RewardsStop(uint256 blockNumber);
     event Withdraw(address indexed user, uint256 amount);
 
-    constructor() public {
+    constructor() {
         SMART_CHEF_FACTORY = msg.sender;
     }
 
@@ -80,8 +78,8 @@ contract SmartChefInitializable is Ownable, ReentrancyGuard {
      * @param _admin: admin address with ownership
      */
     function initialize(
-        IBEP20 _stakedToken,
-        IBEP20 _rewardToken,
+        IGTS20 _stakedToken,
+        IGTS20 _rewardToken,
         uint256 _rewardPerBlock,
         uint256 _startBlock,
         uint256 _bonusEndBlock,
@@ -133,13 +131,13 @@ contract SmartChefInitializable is Ownable, ReentrancyGuard {
         if (user.amount > 0) {
             uint256 pending = user.amount.mul(accTokenPerShare).div(PRECISION_FACTOR).sub(user.rewardDebt);
             if (pending > 0) {
-                rewardToken.safeTransfer(address(msg.sender), pending);
+                rewardToken.transfer(address(msg.sender), pending);
             }
         }
 
         if (_amount > 0) {
             user.amount = user.amount.add(_amount);
-            stakedToken.safeTransferFrom(address(msg.sender), address(this), _amount);
+            stakedToken.transferFrom(address(msg.sender), address(this), _amount);
         }
 
         user.rewardDebt = user.amount.mul(accTokenPerShare).div(PRECISION_FACTOR);
@@ -161,11 +159,11 @@ contract SmartChefInitializable is Ownable, ReentrancyGuard {
 
         if (_amount > 0) {
             user.amount = user.amount.sub(_amount);
-            stakedToken.safeTransfer(address(msg.sender), _amount);
+            stakedToken.transfer(address(msg.sender), _amount);
         }
 
         if (pending > 0) {
-            rewardToken.safeTransfer(address(msg.sender), pending);
+            rewardToken.transfer(address(msg.sender), pending);
         }
 
         user.rewardDebt = user.amount.mul(accTokenPerShare).div(PRECISION_FACTOR);
@@ -184,7 +182,7 @@ contract SmartChefInitializable is Ownable, ReentrancyGuard {
         user.rewardDebt = 0;
 
         if (amountToTransfer > 0) {
-            stakedToken.safeTransfer(address(msg.sender), amountToTransfer);
+            stakedToken.transfer(address(msg.sender), amountToTransfer);
         }
 
         emit EmergencyWithdraw(msg.sender, user.amount);
@@ -195,7 +193,7 @@ contract SmartChefInitializable is Ownable, ReentrancyGuard {
      * @dev Only callable by owner. Needs to be for emergency.
      */
     function emergencyRewardWithdraw(uint256 _amount) external onlyOwner {
-        rewardToken.safeTransfer(address(msg.sender), _amount);
+        rewardToken.transfer(address(msg.sender), _amount);
     }
 
     /**
@@ -208,7 +206,7 @@ contract SmartChefInitializable is Ownable, ReentrancyGuard {
         require(_tokenAddress != address(stakedToken), "Cannot be staked token");
         require(_tokenAddress != address(rewardToken), "Cannot be reward token");
 
-        IBEP20(_tokenAddress).safeTransfer(address(msg.sender), _tokenAmount);
+        IGTS20(_tokenAddress).transfer(address(msg.sender), _tokenAmount);
 
         emit AdminTokenRecovery(_tokenAddress, _tokenAmount);
     }
