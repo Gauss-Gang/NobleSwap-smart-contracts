@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity ^0.8.4;
 
 
 // Computes square roots using the babylonian method. (https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method)

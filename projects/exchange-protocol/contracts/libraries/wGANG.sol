@@ -12,96 +12,70 @@
 
 // SPDX-License-Identifier: GPL-3.0-only
 
-pragma solidity 0.8.17;
-import "../interfaces/IGTS20.sol";
+pragma solidity ^0.4.18;
 
 
 // Wrapped GANG contract for the native Gauss GANG coin. 
-contract wGANG is IGTS20 {
-
-    event Deposit(address indexed dst, uint wad);
-    event Withdrawal(address indexed src, uint wad);
-
-    mapping(address => uint256) public balanceOf;
-    mapping(address => mapping(address => uint256)) public allowance;
-
+contract wGANG{
     string public name = "Wrapped GANG";
     string public symbol = "wGANG";
     uint8  public decimals = 18;
 
+    event Approval(address indexed src, address indexed guy, uint256 wad);
+    event Transfer(address indexed src, address indexed dst, uint256 wad);
+    event Deposit(address indexed dst, uint256 wad);
+    event Withdrawal(address indexed src, uint256 wad);
 
-    // Receive fallback function for GANG.
-    receive() external payable {
+    mapping(address => uint256) public balanceOf;
+    mapping(address => mapping(address => uint256)) public allowance;
+
+    function() public payable {
         deposit();
     }
 
-
-    // Deposit GANG and recieve equal amount of wGANG in return.
     function deposit() public payable {
         balanceOf[msg.sender] += msg.value;
-        emit Deposit(msg.sender, msg.value);
+        Deposit(msg.sender, msg.value);
     }
 
-
-    // Withdraws GANG by first remoinvg wGANG and sending the appropriate amount to msg.sender.
-    function withdraw(uint wad) public {
-        
-        require(wad <= balanceOf[msg.sender], "GTS20: transfer amount exceeds balance");
-        
-        unchecked {
-            balanceOf[msg.sender] = balanceOf[msg.sender] - wad;
-        }        
-        payable(msg.sender).transfer(wad);
-
-        emit Withdrawal(msg.sender, wad);
+    function withdraw(uint256 wad) public {
+        require(balanceOf[msg.sender] >= wad);
+        balanceOf[msg.sender] -= wad;
+        msg.sender.transfer(wad);
+        Withdrawal(msg.sender, wad);
     }
 
-
-    // Returns the total supply of Wrapped Gang by checking how much GANG is currently deposited.
-    function totalSupply() public view returns (uint) {
-        return address(this).balance;
+    function totalSupply() public view returns (uint256) {
+        return this.balance;
     }
 
-
-    // Sets 'amount' as the allowance of 'spender' then returns a boolean indicating result of operation. Emits an {Approval} event.
-    function approve(address spender, uint256 amount) public override returns (bool) {
-        _approve(msg.sender, spender, amount);
+    function approve(address guy, uint256 wad) public returns (bool) {
+        allowance[msg.sender][guy] = wad;
+        Approval(msg.sender, guy, wad);
         return true;
     }
 
-
-    // Sets 'wad' as the allowance of 'guy' then returns a boolean indicating result of operation. Emits an {Approval} event.
-    function _approve(address owner, address guy, uint wad) internal {
-        allowance[owner][guy] = wad;
-        emit Approval(owner, guy, wad);
-    }
-
-
-    // Transfers an amount 'wad' of tokens from the callers account to the referenced 'dst' address. Emits a {Transfer} event.
-    function transfer(address dst, uint wad) public override returns (bool) {
+    function transfer(address dst, uint256 wad) public returns (bool) {
         return transferFrom(msg.sender, dst, wad);
     }
 
+    function transferFrom(
+        address src,
+        address dst,
+        uint256 wad
+    ) public returns (bool) {
+        require(balanceOf[src] >= wad);
 
-    // Transfers an amount 'wad' of tokens from the 'src' address to the 'dst' address. Emits a {Transfer} event.
-    function transferFrom(address src, address dst, uint256 wad)  public override returns (bool) {
-        require(wad <= balanceOf[src], "GTS20: transfer amount exceeds balance");        
-        require(wad <= allowance[src][msg.sender], "GTS20: transfer amount exceeds allowance");
-        
-        if (src != msg.sender && allowance[src][msg.sender] != type(uint).max) {
-            unchecked {
-                _approve(src, msg.sender, (allowance[src][msg.sender] - wad));
-            }
-        }        
-
-        unchecked {
-            balanceOf[src] = balanceOf[src] - wad;
+        if (src != msg.sender && allowance[src][msg.sender] != uint256(-1)) {
+            require(allowance[src][msg.sender] >= wad);
+            allowance[src][msg.sender] -= wad;
         }
-        
-        balanceOf[dst] = balanceOf[dst] + wad;
 
-        emit Transfer(src, dst, wad);
-        
+        balanceOf[src] -= wad;
+        balanceOf[dst] += wad;
+
+        Transfer(src, dst, wad);
+
         return true;
     }
 }
