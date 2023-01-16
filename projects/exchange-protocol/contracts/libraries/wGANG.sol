@@ -16,10 +16,12 @@ pragma solidity ^0.4.18;
 
 
 // Wrapped GANG contract for the native Gauss GANG coin. 
-contract wGANG{
+contract wGANG {
+
     string public name = "Wrapped GANG";
     string public symbol = "wGANG";
     uint8  public decimals = 18;
+
 
     event Approval(address indexed src, address indexed guy, uint256 wad);
     event Transfer(address indexed src, address indexed dst, uint256 wad);

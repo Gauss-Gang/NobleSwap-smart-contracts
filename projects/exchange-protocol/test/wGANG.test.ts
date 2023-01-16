@@ -85,9 +85,9 @@ describe('wGANG', () => {
             it('has right transfer params', async () => {
                 const event = result.events[0]
                 const args = event.args
-                expect(args.from).to.equal(deployer.address)
-                expect(args.to).to.equal(receiver.address)
-                expect(args.value).to.equal(amount)
+                expect(args.src).to.equal(deployer.address)
+                expect(args.dst).to.equal(receiver.address)
+                expect(args.wad).to.equal(amount)
             })
 
         })
@@ -98,9 +98,9 @@ describe('wGANG', () => {
               await expect(wGANG.connect(deployer).transfer(receiver.address, invalidAmount)).to.be.reverted
             })
       
-            it('rejects transfer without allowance', async () => {
-              const amount = tokens(1)
-              await expect(wGANG.connect(deployer).transfer('0x0000000000000000000000000000000000000000', amount)).to.be.reverted
+            it('rejects transfer without proper allowance', async () => {
+              const amount = tokens(10)
+              await expect(wGANG.connect(deployer).transferFrom(thirdParty.address, '0x0000000000000000000000000000000000000000', amount)).to.be.reverted
             })
       
         })
@@ -128,16 +128,25 @@ describe('wGANG', () => {
             it('has right approval params', async () => {
                 const event = result.events[0]
                 const args = event.args
-                expect(args.owner).to.equal(deployer.address)
-                expect(args.spender).to.equal(thirdParty.address)
-                expect(args.value).to.equal(amount)
+                expect(args.src).to.equal(deployer.address)
+                expect(args.guy).to.equal(thirdParty.address)
+                expect(args.wad).to.equal(amount)
             })
+
+        })
+
+        
+        describe('Failure', () => {
+            it('rejects transfer without proper allowance', async () => {
+              await expect(wGANG.connect(deployer).transferFrom(thirdParty.address, '0x0000000000000000000000000000000000000000', amount)).to.be.reverted
+            })
+
         })
 
     })
 
     describe('Delegated Token Transfers', () => {
-        let amount, transaction, result
+        let amount, transaction, result, result1
 
         beforeEach(async () => {
             amount = tokens(10)
@@ -148,7 +157,7 @@ describe('wGANG', () => {
         describe('Success', () => {
             beforeEach(async () => {
                 transaction = await wGANG.connect(thirdParty).transferFrom(deployer.address, receiver.address, amount)
-                result = await transaction.wait()
+                result1 = await transaction.wait()
             })
 
             it('transfers token balances', async () => {
@@ -168,22 +177,22 @@ describe('wGANG', () => {
             it('has right approval params', async () => {
                 const event = result.events[0]
                 const args = event.args
-                expect(args.owner).to.equal(deployer.address)
-                expect(args.spender).to.equal(thirdParty.address)
-                expect(args.value).to.equal(0)
+                expect(args.src).to.equal(deployer.address)
+                expect(args.guy).to.equal(thirdParty.address)
+                expect(args.wad).to.equal(tokens(10))
             })
 
             it('emits a transfer event', async () => {
-                const event = result.events[1]
+                const event = result1.events[0]
                 expect(event.event).to.equal('Transfer')
             })
             
             it('has right transfer params', async () => {
-                const event = result.events[1]
+                const event = result1.events[0]
                 const args = event.args
-                expect(args.from).to.equal(deployer.address)
-                expect(args.to).to.equal(receiver.address)
-                expect(args.value).to.equal(amount)
+                expect(args.src).to.equal(deployer.address)
+                expect(args.dst).to.equal(receiver.address)
+                expect(args.wad).to.equal(amount)
             })
 
         })
@@ -198,4 +207,4 @@ describe('wGANG', () => {
 
     })
 
-}) 
+})
