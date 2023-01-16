@@ -45,6 +45,10 @@
     "web3": "^1.8.1"
   },
   "dependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^2.0.1"
+    "@nomicfoundation/hardhat-toolbox": "^2.0.1",
+    "ethereumjs-util": "^7.1.5",
+    "mocha": "^10.2.0",
+    "rimraf": "^4.0.7",
+    "solc": "^0.5.16"
   }
 }
