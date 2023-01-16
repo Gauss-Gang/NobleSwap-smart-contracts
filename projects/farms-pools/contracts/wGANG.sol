@@ -13,12 +13,14 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 pragma solidity 0.8.17;
-import "./standard-libs/interfaces/IGTS20.sol";
+import "./standard-libs/interfaces/IWGANG.sol";
 
 
-// Wrapped GANG contract for the native Gauss GANG coin. 
-contract wGANG is IGTS20 {
+// Wrapped GANG contract for the native Gauss(GANG) coin. 
+contract wGANG is IWGANG {
 
+    event Approval(address indexed src, address indexed guy, uint256 wad);
+    event Transfer(address indexed src, address indexed dst, uint256 wad);
     event Deposit(address indexed dst, uint wad);
     event Withdrawal(address indexed src, uint wad);
 
@@ -64,7 +66,7 @@ contract wGANG is IGTS20 {
 
 
     // Sets 'amount' as the allowance of 'spender' then returns a boolean indicating result of operation. Emits an {Approval} event.
-    function approve(address spender, uint256 amount) public override returns (bool) {
+    function approve(address spender, uint256 amount) public returns (bool) {
         _approve(msg.sender, spender, amount);
         return true;
     }
@@ -78,17 +80,16 @@ contract wGANG is IGTS20 {
 
 
     // Transfers an amount 'wad' of tokens from the callers account to the referenced 'dst' address. Emits a {Transfer} event.
-    function transfer(address dst, uint wad) public override returns (bool) {
+    function transfer(address dst, uint wad) public returns (bool) {
         return transferFrom(msg.sender, dst, wad);
     }
 
 
     // Transfers an amount 'wad' of tokens from the 'src' address to the 'dst' address. Emits a {Transfer} event.
-    function transferFrom(address src, address dst, uint256 wad)  public override returns (bool) {
+    function transferFrom(address src, address dst, uint256 wad) public returns (bool) {
         require(wad <= balanceOf[src], "GTS20: transfer amount exceeds balance");
         require(wad <= allowance[src][msg.sender], "GTS20: transfer amount exceeds allowance");
 
-        
         if (src != msg.sender && allowance[src][msg.sender] != type(uint).max) {
             _approve(src, msg.sender, (allowance[src][msg.sender] - wad));
         }        
