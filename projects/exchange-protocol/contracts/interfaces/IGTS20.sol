@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.17;
+pragma solidity >=0.5.0;
 
 
 // GTS20 Interface that creates basic functions for a GTS-20 token.

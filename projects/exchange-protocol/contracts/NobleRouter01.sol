@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
-pragma solidity 0.8.17;
+pragma solidity =0.6.6;
 
 import './interfaces/INobleFactory.sol';
 import './libraries/TransferHelper.sol';
 import './libraries/NobleLibrary.sol';
 import './interfaces/INobleRouter01.sol';
 import './interfaces/IGTS20.sol';
-import './interfaces/IWGANG.sol';
+import './interfaces/IWETH.sol';
 
 
 contract NobleRouter01 is INobleRouter01 {
@@ -20,14 +20,14 @@ contract NobleRouter01 is INobleRouter01 {
     }
 
 
-    constructor(address _factory, address _WETH) {
+    constructor(address _factory, address _WETH) public {
         factory = _factory;
         WETH = _WETH;
     }
 
 
     receive() external payable {
-        assert(msg.sender == WETH); // only accept GANG via fallback from the wGANG contract
+        assert(msg.sender == WETH); // only accept ETH via fallback from the WETH contract
     }
 
 
@@ -44,15 +44,20 @@ contract NobleRouter01 is INobleRouter01 {
         if (INobleFactory(factory).getPair(tokenA, tokenB) == address(0)) {
             INobleFactory(factory).createPair(tokenA, tokenB);
         }
+
         (uint reserveA, uint reserveB) = NobleLibrary.getReserves(factory, tokenA, tokenB);
         if (reserveA == 0 && reserveB == 0) {
             (amountA, amountB) = (amountADesired, amountBDesired);
-        } else {
+        } 
+        
+        else {
             uint amountBOptimal = NobleLibrary.quote(amountADesired, reserveA, reserveB);
             if (amountBOptimal <= amountBDesired) {
                 require(amountBOptimal >= amountBMin, 'NobleRouter: INSUFFICIENT_B_AMOUNT');
                 (amountA, amountB) = (amountADesired, amountBOptimal);
-            } else {
+            } 
+            
+            else {
                 uint amountAOptimal = NobleLibrary.quote(amountBDesired, reserveB, reserveA);
                 assert(amountAOptimal <= amountADesired);
                 require(amountAOptimal >= amountAMin, 'NobleRouter: INSUFFICIENT_A_AMOUNT');
@@ -72,11 +77,11 @@ contract NobleRouter01 is INobleRouter01 {
         address to,
         uint deadline
     ) external override ensure(deadline) returns (uint amountA, uint amountB, uint liquidity) {
-        (amountA, amountB) = _addLiquidity(tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin);
-        address pair = NobleLibrary.pairFor(factory, tokenA, tokenB);
-        TransferHelper.safeTransferFrom(tokenA, msg.sender, pair, amountA);
-        TransferHelper.safeTransferFrom(tokenB, msg.sender, pair, amountB);
-        liquidity = INoblePair(pair).mint(to);
+            (amountA, amountB) = _addLiquidity(tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin);
+            address pair = NobleLibrary.pairFor(factory, tokenA, tokenB);
+            TransferHelper.safeTransferFrom(tokenA, msg.sender, pair, amountA);
+            TransferHelper.safeTransferFrom(tokenB, msg.sender, pair, amountB);
+            liquidity = INoblePair(pair).mint(to);
     }
 
 
@@ -88,20 +93,23 @@ contract NobleRouter01 is INobleRouter01 {
         address to,
         uint deadline
     ) external override payable ensure(deadline) returns (uint amountToken, uint amountETH, uint liquidity) {
-        (amountToken, amountETH) = _addLiquidity(
-            token,
-            WETH,
-            amountTokenDesired,
-            msg.value,
-            amountTokenMin,
-            amountETHMin
-        );
-        address pair = NobleLibrary.pairFor(factory, token, WETH);
-        TransferHelper.safeTransferFrom(token, msg.sender, pair, amountToken);
-        IWGANG(WETH).deposit{value: amountETH}();
-        assert(IWGANG(WETH).transfer(pair, amountETH));
-        liquidity = INoblePair(pair).mint(to);
-        if (msg.value > amountETH) TransferHelper.safeTransferETH(msg.sender, msg.value - amountETH); // refund dust eth, if any
+            (amountToken, amountETH) = _addLiquidity(
+                token,
+                WETH,
+                amountTokenDesired,
+                msg.value,
+                amountTokenMin,
+                amountETHMin
+            );
+
+            address pair = NobleLibrary.pairFor(factory, token, WETH);
+            TransferHelper.safeTransferFrom(token, msg.sender, pair, amountToken);
+
+            IWETH(WETH).deposit{value: amountETH}();
+            assert(IWETH(WETH).transfer(pair, amountETH));
+
+            liquidity = INoblePair(pair).mint(to);
+            if (msg.value > amountETH) TransferHelper.safeTransferETH(msg.sender, msg.value - amountETH); // refund dust eth, if any
     }
 
 
@@ -115,13 +123,13 @@ contract NobleRouter01 is INobleRouter01 {
         address to,
         uint deadline
     ) public override ensure(deadline) returns (uint amountA, uint amountB) {
-        address pair = NobleLibrary.pairFor(factory, tokenA, tokenB);
-        INoblePair(pair).transferFrom(msg.sender, pair, liquidity); // send liquidity to pair
-        (uint amount0, uint amount1) = INoblePair(pair).burn(to);
-        (address token0,) = NobleLibrary.sortTokens(tokenA, tokenB);
-        (amountA, amountB) = tokenA == token0 ? (amount0, amount1) : (amount1, amount0);
-        require(amountA >= amountAMin, 'NobleRouter: INSUFFICIENT_A_AMOUNT');
-        require(amountB >= amountBMin, 'NobleRouter: INSUFFICIENT_B_AMOUNT');
+            address pair = NobleLibrary.pairFor(factory, tokenA, tokenB);
+            INoblePair(pair).transferFrom(msg.sender, pair, liquidity); // send liquidity to pair
+            (uint amount0, uint amount1) = INoblePair(pair).burn(to);
+            (address token0,) = NobleLibrary.sortTokens(tokenA, tokenB);
+            (amountA, amountB) = tokenA == token0 ? (amount0, amount1) : (amount1, amount0);
+            require(amountA >= amountAMin, 'NobleRouter: INSUFFICIENT_A_AMOUNT');
+            require(amountB >= amountBMin, 'NobleRouter: INSUFFICIENT_B_AMOUNT');
     }
 
 
@@ -133,18 +141,19 @@ contract NobleRouter01 is INobleRouter01 {
         address to,
         uint deadline
     ) public override ensure(deadline) returns (uint amountToken, uint amountETH) {
-        (amountToken, amountETH) = removeLiquidity(
-            token,
-            WETH,
-            liquidity,
-            amountTokenMin,
-            amountETHMin,
-            address(this),
-            deadline
-        );
-        TransferHelper.safeTransfer(token, to, amountToken);
-        IWGANG(WETH).withdraw(amountETH);
-        TransferHelper.safeTransferETH(to, amountETH);
+            (amountToken, amountETH) = removeLiquidity(
+                token,
+                WETH,
+                liquidity,
+                amountTokenMin,
+                amountETHMin,
+                address(this),
+                deadline
+            );
+
+            TransferHelper.safeTransfer(token, to, amountToken);
+            IWETH(WETH).withdraw(amountETH);
+            TransferHelper.safeTransferETH(to, amountETH);
     }
 
 
@@ -158,10 +167,10 @@ contract NobleRouter01 is INobleRouter01 {
         uint deadline,
         bool approveMax, uint8 v, bytes32 r, bytes32 s
     ) external override returns (uint amountA, uint amountB) {
-        address pair = NobleLibrary.pairFor(factory, tokenA, tokenB);
-        uint value = approveMax ? type(uint).max : liquidity;
-        INoblePair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
-        (amountA, amountB) = removeLiquidity(tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline);
+            address pair = NobleLibrary.pairFor(factory, tokenA, tokenB);
+            uint value = approveMax ? uint(-1) : liquidity;
+            INoblePair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
+            (amountA, amountB) = removeLiquidity(tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline);
     }
 
 
@@ -174,10 +183,10 @@ contract NobleRouter01 is INobleRouter01 {
         uint deadline,
         bool approveMax, uint8 v, bytes32 r, bytes32 s
     ) external override returns (uint amountToken, uint amountETH) {
-        address pair = NobleLibrary.pairFor(factory, token, WETH);
-        uint value = approveMax ? type(uint).max : liquidity;
-        INoblePair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
-        (amountToken, amountETH) = removeLiquidityETH(token, liquidity, amountTokenMin, amountETHMin, to, deadline);
+            address pair = NobleLibrary.pairFor(factory, token, WETH);
+            uint value = approveMax ? uint(-1) : liquidity;
+            INoblePair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
+            (amountToken, amountETH) = removeLiquidityETH(token, liquidity, amountTokenMin, amountETHMin, to, deadline);
     }
 
 
@@ -202,10 +211,10 @@ contract NobleRouter01 is INobleRouter01 {
         address to,
         uint deadline
     ) external override ensure(deadline) returns (uint[] memory amounts) {
-        amounts = NobleLibrary.getAmountsOut(factory, amountIn, path);
-        require(amounts[amounts.length - 1] >= amountOutMin, 'NobleRouter: INSUFFICIENT_OUTPUT_AMOUNT');
-        TransferHelper.safeTransferFrom(path[0], msg.sender, NobleLibrary.pairFor(factory, path[0], path[1]), amounts[0]);
-        _swap(amounts, path, to);
+            amounts = NobleLibrary.getAmountsOut(factory, amountIn, path);
+            require(amounts[amounts.length - 1] >= amountOutMin, 'NobleRouter: INSUFFICIENT_OUTPUT_AMOUNT');
+            TransferHelper.safeTransferFrom(path[0], msg.sender, NobleLibrary.pairFor(factory, path[0], path[1]), amounts[0]);
+            _swap(amounts, path, to);
     }
 
 
@@ -216,10 +225,10 @@ contract NobleRouter01 is INobleRouter01 {
         address to,
         uint deadline
     ) external override ensure(deadline) returns (uint[] memory amounts) {
-        amounts = NobleLibrary.getAmountsIn(factory, amountOut, path);
-        require(amounts[0] <= amountInMax, 'NobleRouter: EXCESSIVE_INPUT_AMOUNT');
-        TransferHelper.safeTransferFrom(path[0], msg.sender, NobleLibrary.pairFor(factory, path[0], path[1]), amounts[0]);
-        _swap(amounts, path, to);
+            amounts = NobleLibrary.getAmountsIn(factory, amountOut, path);
+            require(amounts[0] <= amountInMax, 'NobleRouter: EXCESSIVE_INPUT_AMOUNT');
+            TransferHelper.safeTransferFrom(path[0], msg.sender, NobleLibrary.pairFor(factory, path[0], path[1]), amounts[0]);
+            _swap(amounts, path, to);
     }
 
 
@@ -230,12 +239,14 @@ contract NobleRouter01 is INobleRouter01 {
         ensure(deadline)
         returns (uint[] memory amounts)
     {
-        require(path[0] == WETH, 'NobleRouter: INVALID_PATH');
-        amounts = NobleLibrary.getAmountsOut(factory, msg.value, path);
-        require(amounts[amounts.length - 1] >= amountOutMin, 'NobleRouter: INSUFFICIENT_OUTPUT_AMOUNT');
-        IWGANG(WETH).deposit{value: amounts[0]}();
-        assert(IWGANG(WETH).transfer(NobleLibrary.pairFor(factory, path[0], path[1]), amounts[0]));
-        _swap(amounts, path, to);
+            require(path[0] == WETH, 'NobleRouter: INVALID_PATH');
+
+            amounts = NobleLibrary.getAmountsOut(factory, msg.value, path);
+            require(amounts[amounts.length - 1] >= amountOutMin, 'NobleRouter: INSUFFICIENT_OUTPUT_AMOUNT');
+
+            IWETH(WETH).deposit{value: amounts[0]}();
+            assert(IWETH(WETH).transfer(NobleLibrary.pairFor(factory, path[0], path[1]), amounts[0]));
+            _swap(amounts, path, to);
     }
 
 
@@ -245,13 +256,16 @@ contract NobleRouter01 is INobleRouter01 {
         ensure(deadline)
         returns (uint[] memory amounts)
     {
-        require(path[path.length - 1] == WETH, 'NobleRouter: INVALID_PATH');
-        amounts = NobleLibrary.getAmountsIn(factory, amountOut, path);
-        require(amounts[0] <= amountInMax, 'NobleRouter: EXCESSIVE_INPUT_AMOUNT');
-        TransferHelper.safeTransferFrom(path[0], msg.sender, NobleLibrary.pairFor(factory, path[0], path[1]), amounts[0]);
-        _swap(amounts, path, address(this));
-        IWGANG(WETH).withdraw(amounts[amounts.length - 1]);
-        TransferHelper.safeTransferETH(to, amounts[amounts.length - 1]);
+            require(path[path.length - 1] == WETH, 'NobleRouter: INVALID_PATH');
+
+            amounts = NobleLibrary.getAmountsIn(factory, amountOut, path);
+            require(amounts[0] <= amountInMax, 'NobleRouter: EXCESSIVE_INPUT_AMOUNT');
+
+            TransferHelper.safeTransferFrom(path[0], msg.sender, NobleLibrary.pairFor(factory, path[0], path[1]), amounts[0]);
+
+            _swap(amounts, path, address(this));
+            IWETH(WETH).withdraw(amounts[amounts.length - 1]);
+            TransferHelper.safeTransferETH(to, amounts[amounts.length - 1]);
     }
 
 
@@ -261,13 +275,16 @@ contract NobleRouter01 is INobleRouter01 {
         ensure(deadline)
         returns (uint[] memory amounts)
     {
-        require(path[path.length - 1] == WETH, 'NobleRouter: INVALID_PATH');
-        amounts = NobleLibrary.getAmountsOut(factory, amountIn, path);
-        require(amounts[amounts.length - 1] >= amountOutMin, 'NobleRouter: INSUFFICIENT_OUTPUT_AMOUNT');
-        TransferHelper.safeTransferFrom(path[0], msg.sender, NobleLibrary.pairFor(factory, path[0], path[1]), amounts[0]);
-        _swap(amounts, path, address(this));
-        IWGANG(WETH).withdraw(amounts[amounts.length - 1]);
-        TransferHelper.safeTransferETH(to, amounts[amounts.length - 1]);
+            require(path[path.length - 1] == WETH, 'NobleRouter: INVALID_PATH');
+
+            amounts = NobleLibrary.getAmountsOut(factory, amountIn, path);
+            require(amounts[amounts.length - 1] >= amountOutMin, 'NobleRouter: INSUFFICIENT_OUTPUT_AMOUNT');
+
+            TransferHelper.safeTransferFrom(path[0], msg.sender, NobleLibrary.pairFor(factory, path[0], path[1]), amounts[0]);
+
+            _swap(amounts, path, address(this));
+            IWETH(WETH).withdraw(amounts[amounts.length - 1]);
+            TransferHelper.safeTransferETH(to, amounts[amounts.length - 1]);
     }
 
 
@@ -278,13 +295,16 @@ contract NobleRouter01 is INobleRouter01 {
         ensure(deadline)
         returns (uint[] memory amounts)
     {
-        require(path[0] == WETH, 'NobleRouter: INVALID_PATH');
-        amounts = NobleLibrary.getAmountsIn(factory, amountOut, path);
-        require(amounts[0] <= msg.value, 'NobleRouter: EXCESSIVE_INPUT_AMOUNT');
-        IWGANG(WETH).deposit{value: amounts[0]}();
-        assert(IWGANG(WETH).transfer(NobleLibrary.pairFor(factory, path[0], path[1]), amounts[0]));
-        _swap(amounts, path, to);
-        if (msg.value > amounts[0]) TransferHelper.safeTransferETH(msg.sender, msg.value - amounts[0]); // refund dust eth, if any
+            require(path[0] == WETH, 'NobleRouter: INVALID_PATH');
+
+            amounts = NobleLibrary.getAmountsIn(factory, amountOut, path);
+            require(amounts[0] <= msg.value, 'NobleRouter: EXCESSIVE_INPUT_AMOUNT');
+
+            IWETH(WETH).deposit{value: amounts[0]}();
+            assert(IWETH(WETH).transfer(NobleLibrary.pairFor(factory, path[0], path[1]), amounts[0]));
+
+            _swap(amounts, path, to);
+            if (msg.value > amounts[0]) TransferHelper.safeTransferETH(msg.sender, msg.value - amounts[0]); // refund dust eth, if any
     }
 
 
