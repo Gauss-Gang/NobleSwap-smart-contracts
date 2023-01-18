@@ -7,6 +7,8 @@ import "hardhat-contract-sizer";
 import "solidity-coverage";
 import "dotenv/config";
 
+import "@nomicfoundation/hardhat-toolbox";
+
 const bscTestnet: NetworkUserConfig = {
   url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
   chainId: 97,

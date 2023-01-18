@@ -1,10 +1,12 @@
 import { expect, assert } from "chai";
 import { solidity } from "ethereum-waffle";
+import { BigNumber } from "ethers";
+import { formatEther } from "ethers/lib/utils";
 
 const { ethers } = require('hardhat')
 
 const tokens = (n) => {
-    return ethers.utils.parseUnits(n.toString(), 18)
+    return ethers.utils.parseEther(n.toString())
 }
 
 describe('MockGTS20', () => {
