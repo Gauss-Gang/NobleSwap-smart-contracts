@@ -22,7 +22,7 @@
         "type": "bytes"
       }
     ],
-    "name": "pancakeCall",
+    "name": "nobleCall",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
