@@ -22,19 +22,17 @@ library NobleLibrary {
         
         (address token0, address token1) = sortTokens(tokenA, tokenB);
         pair = address(
-                    uint160((
-                        uint(
-                            keccak256(
-                                abi.encodePacked(
-                                    hex'ff',
-                                    factory,
-                                    keccak256(abi.encodePacked(token0, token1)),
-                                    hex'd0d4c4cd0848c93cb4fd1f498d7013ee6bfb25783ea21593d5834f5d250ece66' // init code hash
-                                )
-                            )
-                        )
-                    ))
-                );
+            uint256(
+                keccak256(
+                    abi.encodePacked(
+                        hex"ff",
+                        factory,
+                        keccak256(abi.encodePacked(token0, token1)),
+                        hex"a5934690703a592a07e841ca29d5e5c79b5e22ed4749057bb216dc31100be1c0" // init code hash
+                    )
+                )
+            )
+        );
     }
 
 
@@ -57,21 +55,21 @@ library NobleLibrary {
 
     // Given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset.
     function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) internal pure returns (uint amountOut) {
-        require(amountIn > 0, 'NobleLibrary: INSUFFICIENT_INPUT_AMOUNT');
-        require(reserveIn > 0 && reserveOut > 0, 'NobleLibrary: INSUFFICIENT_LIQUIDITY');
-        uint amountInWithFee = amountIn.mul(998);
-        uint numerator = amountInWithFee.mul(reserveOut);
-        uint denominator = reserveIn.mul(1000).add(amountInWithFee);
+        require(amountIn > 0, "NobleLibrary: INSUFFICIENT_INPUT_AMOUNT");
+        require(reserveIn > 0 && reserveOut > 0, "NobleLibrary: INSUFFICIENT_LIQUIDITY");
+        uint256 amountInWithFee = amountIn.mul(9975);
+        uint256 numerator = amountInWithFee.mul(reserveOut);
+        uint256 denominator = reserveIn.mul(10000).add(amountInWithFee);
         amountOut = numerator / denominator;
     }
 
 
     // Given an output amount of an asset and pair reserves, returns a required input amount of the other asset.
     function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) internal pure returns (uint amountIn) {
-        require(amountOut > 0, 'NobleLibrary: INSUFFICIENT_OUTPUT_AMOUNT');
-        require(reserveIn > 0 && reserveOut > 0, 'NobleLibrary: INSUFFICIENT_LIQUIDITY');
-        uint numerator = reserveIn.mul(amountOut).mul(1000);
-        uint denominator = reserveOut.sub(amountOut).mul(998);
+        require(amountOut > 0, "NobleLibrary: INSUFFICIENT_OUTPUT_AMOUNT");
+        require(reserveIn > 0 && reserveOut > 0, "NobleLibrary: INSUFFICIENT_LIQUIDITY");
+        uint256 numerator = reserveIn.mul(amountOut).mul(10000);
+        uint256 denominator = reserveOut.sub(amountOut).mul(9975);
         amountIn = (numerator / denominator).add(1);
     }
 
@@ -79,10 +77,10 @@ library NobleLibrary {
     // Performs chained getAmountOut calculations on any number of pairs.
     function getAmountsOut(address factory, uint amountIn, address[] memory path) internal view returns (uint[] memory amounts) {
         require(path.length >= 2, 'NobleLibrary: INVALID_PATH');
-        amounts = new uint[](path.length);
+        amounts = new uint256[](path.length);
         amounts[0] = amountIn;
-        for (uint i; i < path.length - 1; i++) {
-            (uint reserveIn, uint reserveOut) = getReserves(factory, path[i], path[i + 1]);
+        for (uint256 i; i < path.length - 1; i++) {
+            (uint256 reserveIn, uint256 reserveOut) = getReserves(factory, path[i], path[i + 1]);
             amounts[i + 1] = getAmountOut(amounts[i], reserveIn, reserveOut);
         }
     }
@@ -91,10 +89,10 @@ library NobleLibrary {
     // Performs chained getAmountIn calculations on any number of pairs.
     function getAmountsIn(address factory, uint amountOut, address[] memory path) internal view returns (uint[] memory amounts) {
         require(path.length >= 2, 'NobleLibrary: INVALID_PATH');
-        amounts = new uint[](path.length);
+        amounts = new uint256[](path.length);
         amounts[amounts.length - 1] = amountOut;
-        for (uint i = path.length - 1; i > 0; i--) {
-            (uint reserveIn, uint reserveOut) = getReserves(factory, path[i - 1], path[i]);
+        for (uint256 i = path.length - 1; i > 0; i--) {
+            (uint256 reserveIn, uint256 reserveOut) = getReserves(factory, path[i - 1], path[i]);
             amounts[i - 1] = getAmountIn(amounts[i], reserveIn, reserveOut);
         }
     }
