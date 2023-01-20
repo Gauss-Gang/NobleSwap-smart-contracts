@@ -1,24 +1,23 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.17;
 pragma abicoder v2;
 
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import {ERC721Holder} from "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
+import "./access/Ownable.sol";
+import "./utilities/ReentrancyGuard.sol";
+import "./libraries/EnumerableSet.sol";
+import "./interfaces/IGTS20.sol";
+import "./contracts/wGANG.sol";
+import "./interfaces/IWGANG.sol";
+import "./interfaces/IERC721.sol";
+import "./utilities/ERC721Holder.sol";
+import "./interfaces/ICollectionWhitelistChecker.sol";
 
-import {IWETH} from "./interfaces/IWETH.sol";
 
-import {ICollectionWhitelistChecker} from "./interfaces/ICollectionWhitelistChecker.sol";
 
 contract ERC721NFTMarketV1 is ERC721Holder, Ownable, ReentrancyGuard {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.UintSet;
 
-    using SafeERC20 for IERC20;
 
     enum CollectionStatus {
         Pending,
@@ -26,12 +25,11 @@ contract ERC721NFTMarketV1 is ERC721Holder, Ownable, ReentrancyGuard {
         Close
     }
 
-    address public immutable WBNB;
-
-    uint256 public constant TOTAL_MAX_FEE = 1000; // 10% of a sale
-
+    address public immutable WGANG;
     address public adminAddress;
     address public treasuryAddress;
+
+    uint256 public constant TOTAL_MAX_FEE = 1000; // 10% of a sale
 
     uint256 public minimumAskPrice; // in wei
     uint256 public maximumAskPrice; // in wei
@@ -124,27 +122,27 @@ contract ERC721NFTMarketV1 is ERC721Holder, Ownable, ReentrancyGuard {
      * @notice Constructor
      * @param _adminAddress: address of the admin
      * @param _treasuryAddress: address of the treasury
-     * @param _WBNBAddress: WBNB address
+     * @param _WGANGAddress: WGANG address
      * @param _minimumAskPrice: minimum ask price
      * @param _maximumAskPrice: maximum ask price
      */
     constructor(
         address _adminAddress,
         address _treasuryAddress,
-        address _WBNBAddress,
+        address _WGANGAddress,
         uint256 _minimumAskPrice,
         uint256 _maximumAskPrice
     ) {
         require(_adminAddress != address(0), "Operations: Admin address cannot be zero");
         require(_treasuryAddress != address(0), "Operations: Treasury address cannot be zero");
-        require(_WBNBAddress != address(0), "Operations: WBNB address cannot be zero");
+        require(_WGANGAddress != address(0), "Operations: WGANG address cannot be zero");
         require(_minimumAskPrice > 0, "Operations: _minimumAskPrice must be > 0");
         require(_minimumAskPrice < _maximumAskPrice, "Operations: _minimumAskPrice < _maximumAskPrice");
 
         adminAddress = _adminAddress;
         treasuryAddress = _treasuryAddress;
 
-        WBNB = _WBNBAddress;
+        WGANG = _WGANGAddress;
 
         minimumAskPrice = _minimumAskPrice;
         maximumAskPrice = _maximumAskPrice;
@@ -157,23 +155,23 @@ contract ERC721NFTMarketV1 is ERC721Holder, Ownable, ReentrancyGuard {
      */
     function buyTokenUsingBNB(address _collection, uint256 _tokenId) external payable nonReentrant {
         // Wrap BNB
-        IWETH(WBNB).deposit{value: msg.value}();
+        IWGANG(WGANG).deposit{value: msg.value}();
 
         _buyToken(_collection, _tokenId, msg.value, true);
     }
 
     /**
-     * @notice Buy token with WBNB by matching the price of an existing ask order
+     * @notice Buy token with WGANG by matching the price of an existing ask order
      * @param _collection: contract address of the NFT
      * @param _tokenId: tokenId of the NFT purchased
      * @param _price: price (must be equal to the askPrice set by the seller)
      */
-    function buyTokenUsingWBNB(
+    function buyTokenUsingWGANG(
         address _collection,
         uint256 _tokenId,
         uint256 _price
     ) external nonReentrant {
-        IERC20(WBNB).safeTransferFrom(address(msg.sender), address(this), _price);
+        IGTS20(WGANG).transferFrom(address(msg.sender), address(this), _price);
 
         _buyToken(_collection, _tokenId, _price, false);
     }
@@ -207,7 +205,7 @@ contract ERC721NFTMarketV1 is ERC721Holder, Ownable, ReentrancyGuard {
         require(revenueToClaim != 0, "Claim: Nothing to claim");
         pendingRevenue[msg.sender] = 0;
 
-        IERC20(WBNB).safeTransfer(address(msg.sender), revenueToClaim);
+        IGTS20(WGANG).transfer(address(msg.sender), revenueToClaim);
 
         emit RevenueClaim(msg.sender, revenueToClaim);
     }
@@ -233,7 +231,7 @@ contract ERC721NFTMarketV1 is ERC721Holder, Ownable, ReentrancyGuard {
         require(_canTokenBeListed(_collection, _tokenId), "Order: tokenId not eligible");
 
         // Transfer NFT to this contract
-        IERC721(_collection).safeTransferFrom(address(msg.sender), address(this), _tokenId);
+        IERC721(_collection).transferFrom(address(msg.sender), address(this), _tokenId);
 
         // Adjust the information
         _tokenIdsOfSellerForCollection[msg.sender][_collection].add(_tokenId);
@@ -383,11 +381,11 @@ contract ERC721NFTMarketV1 is ERC721Holder, Ownable, ReentrancyGuard {
      * @dev Callable by owner
      */
     function recoverFungibleTokens(address _token) external onlyOwner {
-        require(_token != WBNB, "Operations: Cannot recover WBNB");
-        uint256 amountToRecover = IERC20(_token).balanceOf(address(this));
+        require(_token != WGANG, "Operations: Cannot recover WGANG");
+        uint256 amountToRecover = IGTS20(_token).balanceOf(address(this));
         require(amountToRecover != 0, "Operations: No token to recover");
 
-        IERC20(_token).safeTransfer(address(msg.sender), amountToRecover);
+        IGTS20(_token).transfer(address(msg.sender), amountToRecover);
 
         emit TokenRecovery(_token, amountToRecover);
     }
@@ -400,7 +398,7 @@ contract ERC721NFTMarketV1 is ERC721Holder, Ownable, ReentrancyGuard {
      */
     function recoverNonFungibleToken(address _token, uint256 _tokenId) external onlyOwner nonReentrant {
         require(!_askTokenIds[_token].contains(_tokenId), "Operations: NFT not recoverable");
-        IERC721(_token).safeTransferFrom(address(this), address(msg.sender), _tokenId);
+        IERC721(_token).transferFrom(address(this), address(msg.sender), _tokenId);
 
         emit NonFungibleTokenRecovery(_token, _tokenId);
     }
@@ -604,7 +602,7 @@ contract ERC721NFTMarketV1 is ERC721Holder, Ownable, ReentrancyGuard {
      * @param _collection: contract address of the NFT
      * @param _tokenId: tokenId of the NFT purchased
      * @param _price: price (must match the askPrice from the seller)
-     * @param _withBNB: whether the token is bought with BNB (true) or WBNB (false)
+     * @param _withBNB: whether the token is bought with BNB (true) or WGANG (false)
      */
     function _buyToken(
         address _collection,
@@ -632,8 +630,8 @@ contract ERC721NFTMarketV1 is ERC721Holder, Ownable, ReentrancyGuard {
         delete _askDetails[_collection][_tokenId];
         _askTokenIds[_collection].remove(_tokenId);
 
-        // Transfer WBNB
-        IERC20(WBNB).safeTransfer(askOrder.seller, netPrice);
+        // Transfer WGANG
+        IGTS20(WGANG).transfer(askOrder.seller, netPrice);
 
         // Update pending revenues for treasury/creator (if any!)
         if (creatorFee != 0) {
@@ -646,7 +644,7 @@ contract ERC721NFTMarketV1 is ERC721Holder, Ownable, ReentrancyGuard {
         }
 
         // Transfer NFT to buyer
-        IERC721(_collection).safeTransferFrom(address(this), address(msg.sender), _tokenId);
+        IERC721(_collection).transferFrom(address(this), address(msg.sender), _tokenId);
 
         // Emit event
         emit Trade(_collection, _tokenId, askOrder.seller, msg.sender, _price, netPrice, _withBNB);

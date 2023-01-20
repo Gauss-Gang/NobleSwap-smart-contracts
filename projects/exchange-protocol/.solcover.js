@@ -5,11 +5,12 @@ module.exports = {
     "libraries/NobleLibrary.sol",
     "libraries/SafeMath.sol",
     "libraries/UQ112x112.sol",
+    "libraries/WBNB.sol",
     "NobleGTS20.sol",
     "NobleFactory.sol",
     "NoblePair.sol",
     "NobleRouter.sol",
     "NobleRouter01.sol",
-    "utils/MockGTS20.sol",
+    "testing/MockGTS20.sol",
   ],
 };

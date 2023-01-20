@@ -1,6 +1,6 @@
 {
   "name": "exchange-protocol",
-  "description": "Exchange contracts from Uniswap v2, including core and peripheral contracts",
+  "description": "Exchange contracts from Uniswap v2",
   "version": "2.0.0",
   "license": "GPL-3.0/MIT",
   "private": true,
