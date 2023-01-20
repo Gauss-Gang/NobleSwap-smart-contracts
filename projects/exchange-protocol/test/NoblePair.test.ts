@@ -15,7 +15,7 @@
 //   gasLimit: 9999999
 // }
 
-// describe('UniswapV2Pair', () => {
+// describe('NoblePair', () => {
 //   const provider = new MockProvider({
 //     hardfork: 'istanbul',
 //     mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
