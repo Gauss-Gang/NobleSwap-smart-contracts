@@ -5,13 +5,13 @@ import "../utilities/Initializable.sol";
 import "../utilities/Context_UPG.sol";
 import "../access/Ownable_UPG.sol";
 import "../security/Pausable.sol";
-import "../interfaces/IGTS20_UPG.sol";
 import "../libraries/Address.sol";
+import "../../standard-libs/interfaces/IGTS20.sol";
 
 
 
 // Implementation of the IGTS20 Interface, using Context, Pausable, Ownable, and Snapshot Extenstions.
-contract GTS20_UPG is Initializable, Context_UPG, IGTS20_UPG, Pausable, Ownable_UPG {
+contract GTS20_UPG is Initializable, Context_UPG, IGTS20, Pausable, Ownable_UPG {
     
     // Dev-Note: Solidity 0.8.0 added built-in support for checked math, therefore the "SafeMath" library is no longer needed.
     using Address for address;

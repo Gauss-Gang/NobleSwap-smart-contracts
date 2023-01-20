@@ -20,9 +20,7 @@ import "./upgradable-libs/contracts/GTS20_UPG.sol";
 import "./upgradable-libs/contracts/GTS20Snapshot_UPG.sol";
 
 
-/*  
-    Noble Token (NOBLE)
-*/
+
 contract NobleToken is Initializable, GTS20_UPG, GTS20Snapshot_UPG, UUPSUpgradeable {
 
     // A checkpoint for marking number of votes from a given block.

@@ -10,7 +10,7 @@ import "./NobleBar.sol";
 
 
 interface IMigratorChef {
-    /*  Perform LP token migration from legacy NobleSwap to NobleSwap. Takes the current LP token address and returns the new LP token address.
+    /*  Perform LP token migration from legacy NobleSwap to NobleSwap V2. Takes the current LP token address and returns the new LP token address.
             
             NOTE:   - Migrator should have full access to the caller's LP token.
                     - XXX Migrator must have allowance access to NobleSwap LP tokens.

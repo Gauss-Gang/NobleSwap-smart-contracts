@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.17;
 import "../utilities/Initializable.sol";
-import "../utilities/Context.sol";
+import "../utilities/Context_UPG.sol";
 
 
 
@@ -11,7 +11,7 @@ import "../utilities/Context.sol";
         - It will make available the modifiers `whenNotPaused` and `whenPaused`, which can be applied to the functions of your contract. 
         - Note that they will not be pausable by simply including this module, only once the modifiers are put in place.              
 */
-abstract contract Pausable is Initializable, Context {
+abstract contract Pausable is Initializable, Context_UPG {
     
     // Emitted when the pause is triggered by `account`.
     event Paused(address account);

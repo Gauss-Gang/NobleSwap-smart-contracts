@@ -5,7 +5,6 @@ module.exports = {
     "libraries/NobleLibrary.sol",
     "libraries/SafeMath.sol",
     "libraries/UQ112x112.sol",
-    "libraries/WBNB.sol",
     "NobleGTS20.sol",
     "NobleFactory.sol",
     "NoblePair.sol",
