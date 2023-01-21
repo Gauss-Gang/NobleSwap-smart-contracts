@@ -1,5 +1,12 @@
 # Noble Swap Contracts
 
+<p align="left">
+  <a href="https://nobleswap.io">
+      <img src="https://user-images.githubusercontent.com/85043551/213883186-882ccc6c-7b0a-4ce8-b5e3-a8d7258aeee5.png" height="175">
+  </a>
+</p>
+
+
 This repo contains all the contracts used in Noble Swap. It is divided in independent projects where each of them contains its smart contracts, test environment and unique config files.
 
 ## Existing projects
