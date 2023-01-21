@@ -10,4 +10,3 @@ export type { INoblePair } from "./INoblePair";
 export type { INobleRouter01 } from "./INobleRouter01";
 export type { INobleRouter02 } from "./INobleRouter02";
 export type { IWETH } from "./IWETH";
-export type { IWGANG } from "./IWGANG";

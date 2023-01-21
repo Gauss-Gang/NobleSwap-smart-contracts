@@ -10,4 +10,3 @@ export { INoblePair__factory } from "./INoblePair__factory";
 export { INobleRouter01__factory } from "./INobleRouter01__factory";
 export { INobleRouter02__factory } from "./INobleRouter02__factory";
 export { IWETH__factory } from "./IWETH__factory";
-export { IWGANG__factory } from "./IWGANG__factory";

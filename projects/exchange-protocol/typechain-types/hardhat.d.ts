@@ -49,17 +49,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IWETH__factory>;
     getContractFactory(
-      name: "IWGANG",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IWGANG__factory>;
-    getContractFactory(
       name: "GTS20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.GTS20__factory>;
-    getContractFactory(
-      name: "WGANG",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.WGANG__factory>;
     getContractFactory(
       name: "NobleFactory",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -80,10 +72,6 @@ declare module "hardhat/types/runtime" {
       name: "NobleRouter01",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.NobleRouter01__factory>;
-    getContractFactory(
-      name: "MockGTS20",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.MockGTS20__factory>;
     getContractFactory(
       name: "MockGTS20",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -135,20 +123,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IWETH>;
     getContractAt(
-      name: "IWGANG",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IWGANG>;
-    getContractAt(
       name: "GTS20",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.GTS20>;
-    getContractAt(
-      name: "WGANG",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.WGANG>;
     getContractAt(
       name: "NobleFactory",
       address: string,
@@ -174,11 +152,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.NobleRouter01>;
-    getContractAt(
-      name: "MockGTS20",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.MockGTS20>;
     getContractAt(
       name: "MockGTS20",
       address: string,

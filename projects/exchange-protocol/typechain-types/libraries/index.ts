@@ -2,4 +2,3 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { GTS20 } from "./GTS20";
-export type { WGANG } from "./WGANG";

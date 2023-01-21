@@ -2,4 +2,3 @@
 /* tslint:disable */
 /* eslint-disable */
 export { GTS20__factory } from "./GTS20__factory";
-export { WGANG__factory } from "./WGANG__factory";

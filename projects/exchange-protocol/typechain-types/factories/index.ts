@@ -4,7 +4,6 @@
 export * as interfaces from "./interfaces";
 export * as libraries from "./libraries";
 export * as testing from "./testing";
-export * as utils from "./utils";
 export { NobleFactory__factory } from "./NobleFactory__factory";
 export { NobleGTS20__factory } from "./NobleGTS20__factory";
 export { NoblePair__factory } from "./NoblePair__factory";
