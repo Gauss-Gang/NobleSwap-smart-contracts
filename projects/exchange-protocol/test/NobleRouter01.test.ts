@@ -5,8 +5,8 @@ import { constants, BigNumber } from 'ethers'
 import { solidity, MockProvider, createFixtureLoader } from 'ethereum-waffle'
 import { ecsign } from 'ethereumjs-util'
 
-import { expandTo18Decimals, getApprovalDigest, mineBlock, MINIMUM_LIQUIDITY } from './sharedCore/utilities'
-import { v2Fixture } from './sharedCore/fixtures'
+import { expandTo18Decimals, getApprovalDigest, mineBlock, MINIMUM_LIQUIDITY } from './sharedPeriphery/utilities'
+import { v2Fixture } from './sharedPeriphery/fixtures'
 
 chai.use(solidity)
 
