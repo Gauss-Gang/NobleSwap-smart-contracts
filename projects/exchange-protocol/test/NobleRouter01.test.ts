@@ -1,18 +1,18 @@
-// import chai, { expect } from 'chai'
-// import { Contract } from 'ethers'
-// import { AddressZero, Zero, MaxUint256 } from 'ethers/constants'
-// import { BigNumber, bigNumberify } from 'ethers/utils'
-// import { solidity, MockProvider, createFixtureLoader } from 'ethereum-waffle'
-// import { ecsign } from 'ethereumjs-util'
+import chai, { expect } from 'chai'
+import { Contract } from 'ethers'
+import { AddressZero, Zero, MaxUint256 } from 'ethers/constants'
+import { constants, BigNumber } from 'ethers'
+import { solidity, MockProvider, createFixtureLoader } from 'ethereum-waffle'
+import { ecsign } from 'ethereumjs-util'
 
-// import { expandTo18Decimals, getApprovalDigest, mineBlock, MINIMUM_LIQUIDITY } from './shared/utilities'
-// import { v2Fixture } from './shared/fixtures'
+import { expandTo18Decimals, getApprovalDigest, mineBlock, MINIMUM_LIQUIDITY } from './sharedCore/utilities'
+import { v2Fixture } from './sharedCore/fixtures'
 
-// chai.use(solidity)
+chai.use(solidity)
 
-// const overrides = {
-//   gasLimit: 9999999
-// }
+const overrides = {
+  gasLimit: 9999999
+}
 
 // enum RouterVersion {
 //   UniswapV2Router01 = 'UniswapV2Router01',

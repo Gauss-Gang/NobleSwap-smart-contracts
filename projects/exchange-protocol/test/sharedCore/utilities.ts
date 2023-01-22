@@ -3,14 +3,13 @@ import { Contract, providers, utils } from 'ethers'
 import {
   BigNumber
 } from 'ethers'
-import bigNumberify from "bignumberify";
 
 const PERMIT_TYPEHASH = utils.keccak256(
   utils.toUtf8Bytes('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)')
 )
 
 export function expandTo18Decimals(n: number): BigNumber {
-  return bigNumberify(n).mul(bigNumberify(10).pow(18))
+  return BigNumber.from(n).mul(BigNumber.from(10).pow(18))
 }
 
 function getDomainSeparator(name: string, tokenAddress: string) {
@@ -90,5 +89,5 @@ export async function mineBlock(provider: providers.Web3Provider, timestamp: num
 }
 
 export function encodePrice(reserve0: BigNumber, reserve1: BigNumber) {
-  return [reserve1.mul(bigNumberify(2).pow(112)).div(reserve0), reserve0.mul(bigNumberify(2).pow(112)).div(reserve1)]
+  return [reserve1.mul(BigNumber.from(2).pow(112)).div(reserve0), reserve0.mul(BigNumber.from(2).pow(112)).div(reserve1)]
 }
