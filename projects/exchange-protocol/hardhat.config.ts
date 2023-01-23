@@ -8,6 +8,9 @@ import "solidity-coverage";
 import "dotenv/config";
 
 import "@nomicfoundation/hardhat-toolbox";
+import '@nomicfoundation/hardhat-chai-matchers'
+import '@nomiclabs/hardhat-waffle'
+import 'ethereum-waffle'
 
 const bscTestnet: NetworkUserConfig = {
   url: "https://data-seed-prebsc-1-s1.binance.org:8545/",

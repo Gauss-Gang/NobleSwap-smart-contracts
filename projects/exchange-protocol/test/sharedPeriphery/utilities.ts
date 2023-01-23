@@ -1,6 +1,5 @@
-import { Contract } from 'ethers'
+import { Contract, BigNumber, utils } from 'ethers'
 import { Web3Provider } from '@ethersproject/providers'
-import { BigNumber, utils } from 'ethers'
 
 export const MINIMUM_LIQUIDITY = BigNumber.from(10).pow(3)
 

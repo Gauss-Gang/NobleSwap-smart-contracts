@@ -1,8 +1,5 @@
 
-import { Contract, providers, utils } from 'ethers'
-import {
-  BigNumber
-} from 'ethers'
+import { Contract, providers, utils, BigNumber } from 'ethers'
 
 const PERMIT_TYPEHASH = utils.keccak256(
   utils.toUtf8Bytes('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)')

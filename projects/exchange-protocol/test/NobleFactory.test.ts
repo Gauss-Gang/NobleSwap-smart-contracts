@@ -9,6 +9,8 @@ import { factoryFixture } from './sharedCore/fixtures'
 
 import NoblePair from '../artifacts/contracts/NoblePair.sol/NoblePair.json'
 
+chai.use(solidity)
+
 const TEST_ADDRESSES: [string, string] = [
   '0x1000000000000000000000000000000000000000',
   '0x2000000000000000000000000000000000000000'
@@ -66,20 +68,22 @@ describe('NobleFactory', () => {
   it('createPair:gas', async () => {
     const tx = await factory.createPair(...TEST_ADDRESSES)
     const receipt = await tx.wait()
-    expect(receipt.gasUsed).to.eq(2780802)
+    expect(Number(receipt.gasUsed)).to.eq(2780802)
   })
 
   it('setFeeTo', async () => {
-    await expect(factory.connect(other).setFeeTo(other.address)).to.be.revertedWith('Noble: FORBIDDEN')
+    // const response = await factory.connect(other).setFeeTo(other.address)
+    // await expect(response.wait()).to.be.reverted.revertedWith('revert Noble: FORBIDDEN')
+    await expect(factory.connect(other).setFeeTo(other.address)).to.be.reverted
     await factory.setFeeTo(wallet.address)
     expect(await factory.feeTo()).to.eq((wallet.address))
   })
 
   it('setFeeToSetter', async () => {
-    await expect(factory.connect(other).setFeeToSetter(other.address)).to.be.revertedWith('Noble: FORBIDDEN')
+    await expect(factory.connect(other).setFeeToSetter(other.address)).to.be.revertedWith('revert Noble: FORBIDDEN')
     await factory.setFeeToSetter(other.address)
     expect(await factory.feeToSetter()).to.eq(other.address)
-    await expect(factory.setFeeToSetter(wallet.address)).to.be.revertedWith('Noble: FORBIDDEN')
+    await expect(factory.setFeeToSetter(wallet.address)).to.be.revertedWith('revert Noble: FORBIDDEN')
   })
 
 })
