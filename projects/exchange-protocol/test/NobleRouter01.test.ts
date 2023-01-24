@@ -1,9 +1,9 @@
 import chai, { expect } from 'chai'
 import { Contract } from 'ethers'
-import { AddressZero, Zero, MaxUint256 } from 'ethers/constants'
-import { constants, BigNumber } from 'ethers'
+import { constants, BigNumber, utils } from 'ethers'
 import { solidity, MockProvider, createFixtureLoader } from 'ethereum-waffle'
 import { ecsign } from 'ethereumjs-util'
+const { ethers } = require('hardhat')
 
 import { expandTo18Decimals, getApprovalDigest, mineBlock, MINIMUM_LIQUIDITY } from './sharedPeriphery/utilities'
 import { v2Fixture } from './sharedPeriphery/fixtures'
@@ -15,8 +15,8 @@ const overrides = {
 }
 
 enum RouterVersion {
-  UniswapV2Router01 = 'UniswapV2Router01',
-  UniswapV2Router02 = 'UniswapV2Router02'
+  NobleRouter = 'NobleRouter',
+  NobleRouter01 = 'NobleRouter01'
 }
 
 describe('NoblePair{01,02}', () => {
@@ -24,7 +24,7 @@ describe('NoblePair{01,02}', () => {
     const provider = new MockProvider({
       hardfork: 'istanbul',
       mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
-      gasLimit: 9999999
+      gasLimit: '99999999'
     })
     const [wallet] = provider.getWallets()
     const loadFixture = createFixtureLoader(provider, [wallet])
@@ -46,8 +46,8 @@ describe('NoblePair{01,02}', () => {
       WETHPartner = fixture.WETHPartner
       factory = fixture.factoryV2
       router = {
-        [RouterVersion.UniswapV2Router01]: fixture.router01,
-        [RouterVersion.UniswapV2Router02]: fixture.router02
+        [RouterVersion.NobleRouter]: fixture.router01,
+        [RouterVersion.NobleRouter01]: fixture.router02
       }[routerVersion as RouterVersion]
       pair = fixture.pair
       WETHPair = fixture.WETHPair
@@ -55,7 +55,8 @@ describe('NoblePair{01,02}', () => {
     })
 
     afterEach(async function() {
-      expect(await provider.getBalance(router.address)).to.eq(Zero)
+      console.log(router.address)
+      expect(await provider.getBalance(router.address)).to.eq(constants.Zero)
     })
 
     describe(routerVersion, () => {
@@ -69,8 +70,8 @@ describe('NoblePair{01,02}', () => {
         const token1Amount = expandTo18Decimals(4)
 
         const expectedLiquidity = expandTo18Decimals(2)
-        await token0.approve(router.address, MaxUint256)
-        await token1.approve(router.address, MaxUint256)
+        await token0.approve(router.address, constants.MaxUint256)
+        await token1.approve(router.address, constants.MaxUint256)
         await expect(
           router.addLiquidity(
             token0.address,
@@ -80,7 +81,7 @@ describe('NoblePair{01,02}', () => {
             0,
             0,
             wallet.address,
-            MaxUint256,
+            constants.MaxUint256,
             overrides
           )
         )
@@ -89,9 +90,9 @@ describe('NoblePair{01,02}', () => {
           .to.emit(token1, 'Transfer')
           .withArgs(wallet.address, pair.address, token1Amount)
           .to.emit(pair, 'Transfer')
-          .withArgs(AddressZero, AddressZero, MINIMUM_LIQUIDITY)
+          .withArgs(constants.AddressZero, constants.AddressZero, MINIMUM_LIQUIDITY)
           .to.emit(pair, 'Transfer')
-          .withArgs(AddressZero, wallet.address, expectedLiquidity.sub(MINIMUM_LIQUIDITY))
+          .withArgs(constants.AddressZero, wallet.address, expectedLiquidity.sub(MINIMUM_LIQUIDITY))
           .to.emit(pair, 'Sync')
           .withArgs(token0Amount, token1Amount)
           .to.emit(pair, 'Mint')
@@ -378,8 +379,8 @@ describe('NoblePair{01,02}', () => {
 //           const receipt = await tx.wait()
 //           expect(receipt.gasUsed).to.eq(
 //             {
-//               [RouterVersion.UniswapV2Router01]: 101876,
-//               [RouterVersion.UniswapV2Router02]: 101898
+//               [RouterVersion.NobleRouter]: 101876,
+//               [RouterVersion.NobleRouter01]: 101898
 //             }[routerVersion as RouterVersion]
 //           )
 //         }).retries(3)
@@ -527,8 +528,8 @@ describe('NoblePair{01,02}', () => {
 //           const receipt = await tx.wait()
 //           expect(receipt.gasUsed).to.eq(
 //             {
-//               [RouterVersion.UniswapV2Router01]: 138770,
-//               [RouterVersion.UniswapV2Router02]: 138770
+//               [RouterVersion.NobleRouter]: 138770,
+//               [RouterVersion.NobleRouter01]: 138770
 //             }[routerVersion as RouterVersion]
 //           )
 //         }).retries(3)

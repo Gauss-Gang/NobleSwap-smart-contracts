@@ -13,6 +13,10 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
+      name: "ERC20",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC20__factory>;
+    getContractFactory(
       name: "IGTS20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IGTS20__factory>;
@@ -49,9 +53,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IWETH__factory>;
     getContractFactory(
+      name: "IUniswapV1Exchange",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IUniswapV1Exchange__factory>;
+    getContractFactory(
+      name: "IUniswapV1Factory",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IUniswapV1Factory__factory>;
+    getContractFactory(
       name: "GTS20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.GTS20__factory>;
+    getContractFactory(
+      name: "Migrations",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Migrations__factory>;
     getContractFactory(
       name: "NobleFactory",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -60,6 +76,10 @@ declare module "hardhat/types/runtime" {
       name: "NobleGTS20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.NobleGTS20__factory>;
+    getContractFactory(
+      name: "NobleMigrator",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.NobleMigrator__factory>;
     getContractFactory(
       name: "NoblePair",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -73,10 +93,35 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.NobleRouter01__factory>;
     getContractFactory(
+      name: "ERC20",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC20__factory>;
+    getContractFactory(
+      name: "WETH9",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.WETH9__factory>;
+    getContractFactory(
+      name: "DeflatingERC20",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DeflatingERC20__factory>;
+    getContractFactory(
       name: "MockGTS20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MockGTS20__factory>;
+    getContractFactory(
+      name: "RouterEventEmitter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.RouterEventEmitter__factory>;
+    getContractFactory(
+      name: "WGANG",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.WGANG__factory>;
 
+    getContractAt(
+      name: "ERC20",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20>;
     getContractAt(
       name: "IGTS20",
       address: string,
@@ -123,10 +168,25 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IWETH>;
     getContractAt(
+      name: "IUniswapV1Exchange",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IUniswapV1Exchange>;
+    getContractAt(
+      name: "IUniswapV1Factory",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IUniswapV1Factory>;
+    getContractAt(
       name: "GTS20",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.GTS20>;
+    getContractAt(
+      name: "Migrations",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Migrations>;
     getContractAt(
       name: "NobleFactory",
       address: string,
@@ -137,6 +197,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.NobleGTS20>;
+    getContractAt(
+      name: "NobleMigrator",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.NobleMigrator>;
     getContractAt(
       name: "NoblePair",
       address: string,
@@ -153,10 +218,35 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.NobleRouter01>;
     getContractAt(
+      name: "ERC20",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20>;
+    getContractAt(
+      name: "WETH9",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.WETH9>;
+    getContractAt(
+      name: "DeflatingERC20",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DeflatingERC20>;
+    getContractAt(
       name: "MockGTS20",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.MockGTS20>;
+    getContractAt(
+      name: "RouterEventEmitter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.RouterEventEmitter>;
+    getContractAt(
+      name: "WGANG",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.WGANG>;
 
     // default types
     getContractFactory(

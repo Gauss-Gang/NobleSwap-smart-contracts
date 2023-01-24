@@ -3,7 +3,7 @@ import { deployContract } from 'ethereum-waffle'
 import { Web3Provider } from '@ethersproject/providers'
 import { expandTo18Decimals } from './utilities'
 
-import GTS20 from '../../artifacts/contracts/libraries/GTS20.sol/GTS20.json'
+import ERC20 from '../../artifacts/contracts/core/ERC20.sol/ERC20.json'
 import NobleFactory from '../../artifacts/contracts/NobleFactory.sol/NobleFactory.json'
 import NoblePair from '../../artifacts/contracts/NoblePair.sol/NoblePair.json'
 
@@ -31,8 +31,8 @@ interface PairFixture extends FactoryFixture {
 export async function pairFixture(provider: Web3Provider, [wallet]: Wallet[]): Promise<PairFixture> {
   const { factory } = await factoryFixture(provider, [wallet])
 
-  const tokenA = await deployContract(wallet, GTS20, [expandTo18Decimals(10000)], overrides)
-  const tokenB = await deployContract(wallet, GTS20, [expandTo18Decimals(10000)], overrides)
+  const tokenA = await deployContract(wallet, ERC20, [expandTo18Decimals(10000)], overrides)
+  const tokenB = await deployContract(wallet, ERC20, [expandTo18Decimals(10000)], overrides)
 
   await factory.createPair(tokenA.address, tokenB.address, overrides)
   const pairAddress = await factory.getPair(tokenA.address, tokenB.address)

@@ -68,7 +68,7 @@ describe('NobleFactory', () => {
   it('createPair:gas', async () => {
     const tx = await factory.createPair(...TEST_ADDRESSES)
     const receipt = await tx.wait()
-    expect(Number(receipt.gasUsed)).to.eq(2780802)
+    expect(Number(receipt.gasUsed)).to.eq(3583136)
   })
 
   it('setFeeTo', async () => {
