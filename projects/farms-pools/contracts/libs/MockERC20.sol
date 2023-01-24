@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.17;
+pragma solidity ^0.8.0;
 
-import "../contracts/GTS20.sol";
+import "../standard-libs/contracts/GTS20.sol";
 
-
-contract MockGTS20 is GTS20 {
+contract MockERC20 is GTS20 {
     constructor(
         string memory name,
         string memory symbol,

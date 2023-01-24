@@ -2,10 +2,10 @@
 // import { artifacts, contract } from "hardhat";
 // import { assert } from "chai";
 
-// const CakeToken = artifacts.require("CakeToken");
-// const SyrupBar = artifacts.require("SyrupBar");
+// const CakeToken = artifacts.require("NobleToken");
+// const SyrupBar = artifacts.require("NobleBar");
 
-// contract("SyrupBar", ([alice, bob, minter]) => {
+// contract("NobleBar", ([alice, bob, minter]) => {
 //   let cake, syrup;
 
 //   beforeEach(async () => {

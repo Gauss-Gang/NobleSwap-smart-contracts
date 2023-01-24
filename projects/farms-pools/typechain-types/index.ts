@@ -3,6 +3,8 @@
 /* eslint-disable */
 import type * as masterChefSol from "./MasterChef.sol";
 export type { masterChefSol };
+import type * as libs from "./libs";
+export type { libs };
 import type * as standardLibs from "./standard-libs";
 export type { standardLibs };
 import type * as upgradableLibs from "./upgradable-libs";
@@ -13,6 +15,10 @@ export type { NobleToken } from "./NobleToken";
 export type { WGANG } from "./WGANG";
 export * as factories from "./factories";
 export { GangStaking__factory } from "./factories/GangStaking__factory";
+export type { MockERC20 } from "./libs/MockERC20";
+export { MockERC20__factory } from "./factories/libs/MockERC20__factory";
+export type { WBNB } from "./libs/WBNB";
+export { WBNB__factory } from "./factories/libs/WBNB__factory";
 export type { IMigratorChef } from "./MasterChef.sol/IMigratorChef";
 export { IMigratorChef__factory } from "./factories/MasterChef.sol/IMigratorChef__factory";
 export type { MasterChef } from "./MasterChef.sol/MasterChef";

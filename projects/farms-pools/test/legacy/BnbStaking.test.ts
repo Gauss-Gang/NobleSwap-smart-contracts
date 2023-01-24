@@ -2,9 +2,9 @@
 // import { artifacts, contract } from "hardhat";
 // import { assert } from "chai";
 
-// const CakeToken = artifacts.require("CakeToken");
-// const BnbStaking = artifacts.require("BnbStaking");
-// const WBNB = artifacts.require("libs/WBNB");
+// const CakeToken = artifacts.require("NobleToken");
+// const BnbStaking = artifacts.require("GangStaking");
+// const WBNB = artifacts.require("WBNB");
 
 // contract("BNB Staking", async ([alice, bob, admin, dev, minter]) => {
 //   let rewardToken, wBNB, bnbChef;

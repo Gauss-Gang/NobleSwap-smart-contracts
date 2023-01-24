@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as masterChefSol from "./MasterChef.sol";
+export * as libs from "./libs";
 export * as standardLibs from "./standard-libs";
 export * as upgradableLibs from "./upgradable-libs";
 export { GangStaking__factory } from "./GangStaking__factory";

@@ -8,6 +8,8 @@ import "solidity-coverage";
 import "dotenv/config";
 
 import "@nomicfoundation/hardhat-toolbox";
+import '@nomicfoundation/hardhat-chai-matchers';
+import '@nomiclabs/hardhat-waffle';
 
 const bscTestnet: NetworkUserConfig = {
   url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
@@ -41,6 +43,15 @@ const config: HardhatUserConfig = {
       },
       {
         version: "0.8.4",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 99999,
+          },
+        },
+      },
+      {
+        version: "0.6.12",
         settings: {
           optimizer: {
             enabled: true,

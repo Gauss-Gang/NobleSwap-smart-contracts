@@ -17,6 +17,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.GangStaking__factory>;
     getContractFactory(
+      name: "MockERC20",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockERC20__factory>;
+    getContractFactory(
+      name: "WBNB",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.WBNB__factory>;
+    getContractFactory(
       name: "IMigratorChef",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IMigratorChef__factory>;
@@ -110,6 +118,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.GangStaking>;
+    getContractAt(
+      name: "MockERC20",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockERC20>;
+    getContractAt(
+      name: "WBNB",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.WBNB>;
     getContractAt(
       name: "IMigratorChef",
       address: string,
