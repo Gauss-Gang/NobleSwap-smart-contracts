@@ -2,22 +2,30 @@
 // import { artifacts, contract } from "hardhat";
 // import { assert } from "chai";
 
-// const CakeToken = artifacts.require("CakeToken");
-// const SyrupBar = artifacts.require("SyrupBar");
+// const CakeToken = artifacts.require("NobleToken");
+// const SyrupBar = artifacts.require("NobleBar");
 // const MasterChef = artifacts.require("MasterChef");
-// const MockBEP20 = artifacts.require("libs/MockBEP20");
+// const MockBEP20 = artifacts.require("libs/MockERC20");
 
 // contract("MasterChef", ([alice, bob, dev, minter]) => {
 //   let cake, syrup, lp1, lp2, lp3, chef;
 
 //   beforeEach(async () => {
+//     (console.log('fail 0'))
 //     cake = await CakeToken.new({ from: minter });
+//     (console.log('fail 1'))
 //     syrup = await SyrupBar.new(cake.address, { from: minter });
+//     (console.log('fail 2'))
 //     lp1 = await MockBEP20.new("LPToken", "LP1", "1000000", { from: minter });
+//     (console.log('fail 3'))
 //     lp2 = await MockBEP20.new("LPToken", "LP2", "1000000", { from: minter });
+//     (console.log('fail 4'))
 //     lp3 = await MockBEP20.new("LPToken", "LP3", "1000000", { from: minter });
+//     (console.log('fail 5'))
 //     chef = await MasterChef.new(cake.address, syrup.address, dev, "1000", "100", { from: minter });
+//     (console.log('fail 6'))
 //     await cake.transferOwnership(chef.address, { from: minter });
+//     (console.log('fail 7'))
 //     await syrup.transferOwnership(chef.address, { from: minter });
 
 //     await lp1.transfer(bob, "2000", { from: minter });

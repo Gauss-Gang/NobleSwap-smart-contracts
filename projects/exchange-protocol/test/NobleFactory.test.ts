@@ -38,23 +38,37 @@ describe('NobleFactory', () => {
   })
 
   async function createPair(tokens: [string, string]) {
-    const bytecode = `0x${NoblePair.evm.bytecode.object}`
+    const bytecode = `${NoblePair.bytecode}`
+    const accounts = await ethers.getSigners()
     const create2Address = getCreate2Address(factory.address, tokens, bytecode)
+    console.log('fail0')
     await expect(factory.createPair(...tokens))
       .to.emit(factory, 'PairCreated')
       .withArgs(TEST_ADDRESSES[0], TEST_ADDRESSES[1], create2Address, BigNumber.from(1))
+    console.log('fail1')
 
     await expect(factory.createPair(...tokens)).to.be.reverted // Noble: PAIR_EXISTS
+    console.log('fail2')
     await expect(factory.createPair(...tokens.slice().reverse())).to.be.reverted // Noble: PAIR_EXISTS
+    console.log('fail3')
     expect(await factory.getPair(...tokens)).to.eq(create2Address)
+    console.log('fail4')
     expect(await factory.getPair(...tokens.slice().reverse())).to.eq(create2Address)
+    console.log('fail5')
     expect(await factory.allPairs(0)).to.eq(create2Address)
+    console.log('fail6')
     expect(await factory.allPairsLength()).to.eq(1)
+    console.log('fail7')
 
-    const pair = new Contract(create2Address, JSON.stringify(NoblePair.abi), provider)
-    expect(await pair.factory()).to.eq(factory.address)
+    const pair = new Contract(create2Address, JSON.stringify(NoblePair.abi), accounts[0])
+    console.log('fail8')
+    console.log(Number(await pair.factory()))
+    expect(await pair.functions.factory()).to.eq(factory.address)
+    console.log('fail9')
     expect(await pair.token0()).to.eq(TEST_ADDRESSES[0])
+    console.log('fail10')
     expect(await pair.token1()).to.eq(TEST_ADDRESSES[1])
+    console.log('fail11')
   }
 
   it('createPair', async () => {
@@ -68,13 +82,11 @@ describe('NobleFactory', () => {
   it('createPair:gas', async () => {
     const tx = await factory.createPair(...TEST_ADDRESSES)
     const receipt = await tx.wait()
-    expect(Number(receipt.gasUsed)).to.eq(3583136)
+    expect(Number(receipt.gasUsed)).to.eq(2780802)
   })
 
   it('setFeeTo', async () => {
-    // const response = await factory.connect(other).setFeeTo(other.address)
-    // await expect(response.wait()).to.be.reverted.revertedWith('revert Noble: FORBIDDEN')
-    await expect(factory.connect(other).setFeeTo(other.address)).to.be.reverted
+    await expect(factory.connect(other).setFeeTo(other.address)).to.be.revertedWith('revert Noble: FORBIDDEN')
     await factory.setFeeTo(wallet.address)
     expect(await factory.feeTo()).to.eq((wallet.address))
   })

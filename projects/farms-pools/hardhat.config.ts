@@ -10,6 +10,7 @@ import "dotenv/config";
 import "@nomicfoundation/hardhat-toolbox";
 import '@nomicfoundation/hardhat-chai-matchers';
 import '@nomiclabs/hardhat-waffle';
+require('@openzeppelin/hardhat-upgrades');
 
 const bscTestnet: NetworkUserConfig = {
   url: "https://data-seed-prebsc-1-s1.binance.org:8545/",

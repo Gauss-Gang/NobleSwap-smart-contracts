@@ -55,7 +55,7 @@
     "ethereumjs-util": "^6.2.0",
     "mocha": "^6.2.2",
     "rimraf": "^3.0.0",
-    "solc": "^0.6.6",
+    "solc": "^0.5.16",
     "TypeScript": "4.3.1-rc"
   }
 }

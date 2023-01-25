@@ -22,6 +22,7 @@ yarn-error.log*
 
 # artifacts/cache/data
 artifacts
+typechain-types
 cache
 
 coverage.json

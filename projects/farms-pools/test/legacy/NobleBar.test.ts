@@ -30,12 +30,21 @@
 //   });
 
 //   it("safeCakeTransfer", async () => {
+
 //     assert.equal((await cake.balanceOf(syrup.address)).toString(), "0");
-//     await cake.mint(syrup.address, 1000, { from: minter });
-//     await syrup.safeCakeTransfer(bob, 200, { from: minter });
+//     console.log('fail 0')
+//     await (cake.mint(syrup.address, 1000, { from: minter }))
+//     console.log('fail 1')
+//     console.log('balance of syrup.address: ', Number(await cake.balanceOf(syrup.address)))
+//     await syrup.safeNobleTransfer(bob, 200, { from: minter });
+//     console.log('fail 2')
 //     assert.equal((await cake.balanceOf(bob)).toString(), "200");
+//     console.log('fail 3')
 //     assert.equal((await cake.balanceOf(syrup.address)).toString(), "800");
-//     await syrup.safeCakeTransfer(bob, 2000, { from: minter });
+//     console.log('fail 4')
+//     await syrup.safeNobleTransfer(bob, 2000, { from: minter });
+//     console.log('fail 5')
 //     assert.equal((await cake.balanceOf(bob)).toString(), "1000");
+//     console.log('fail 6')
 //   });
 // });
