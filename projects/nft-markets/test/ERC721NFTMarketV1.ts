@@ -4,7 +4,7 @@ import { assert } from "chai";
 import { BN, constants, expectEvent, expectRevert } from "@openzeppelin/test-helpers";
 
 const ERC721NFTMarketV1 = artifacts.require("./ERC721NFTMarketV1.sol");
-const PancakeBunniesWhitelistChecker = artifacts.require("./PancakeBunniesWhitelistChecker.sol");
+const PancakeBunniesWhitelistChecker = artifacts.require("./interfaces/PancakeBunniesWhitelistChecker.sol"); // remove use this insted: ICollectionWhitelistChecker
 
 const MockERC20 = artifacts.require("./test/MockGTS20.sol");
 const MockNFT = artifacts.require("./test/MockNFT.sol");
@@ -654,9 +654,11 @@ contract(
           from: seller1,
         });
 
-        // Seller1 cannot purchase its own offer for 1 WBNB
+        // Seller1 cannot purchase its own offer for 1 BNB
         await expectRevert(
-          collectibleMarket.buyTokenUsingWGANG(mockNFT2.address, "0", {
+          collectibleMarket.buyTokenUsingBNB(mockNFT2.address, "0", 
+          // parseEther("1"), 
+          {
             value: parseEther("1").toString(),
             from: seller1,
           }),
@@ -675,7 +677,7 @@ contract(
       it("Price front-running protections work as expected", async () => {
         // Seller1 cannot purchase its own offer for 1.0000000001 BNB
         await expectRevert(
-          collectibleMarket.buyTokenUsingWGANG(mockNFT2.address, "0", {
+          collectibleMarket.buyTokenUsingBNB(mockNFT2.address, "0", {
             value: parseEther("1.0000000001").toString(),
             from: seller1,
           }),
@@ -684,7 +686,7 @@ contract(
 
         // Seller1 cannot purchase its own offer for 1.0000000001 WBNB
         await expectRevert(
-          collectibleMarket.buyTokenUsingWBNB(mockNFT2.address, "0", parseEther("1.0000000001"), {
+          collectibleMarket.buyTokenUsingWGANG(mockNFT2.address, "0", parseEther("1.0000000001"), {
             from: seller1,
           }),
           "Buy: Incorrect price"
@@ -701,7 +703,7 @@ contract(
 
         // Seller1 cannot purchase its own offer for 0.9999999999 WBNB
         await expectRevert(
-          collectibleMarket.buyTokenUsingWBNB(mockNFT2.address, "0", parseEther("0.9999999999"), {
+          collectibleMarket.buyTokenUsingWGANG(mockNFT2.address, "0", parseEther("0.9999999999"), {
             from: seller1,
           }),
           "Buy: Incorrect price"
@@ -741,7 +743,7 @@ contract(
 
         // Buyer1 cannot change purchase the tokenId=0 for 1 BNB
         await expectRevert(
-          collectibleMarket.buyTokenUsingWGANG(mockNFT2.address, "0", {
+          collectibleMarket.buyTokenUsingBNB(mockNFT2.address, "0", {
             value: parseEther("1").toString(),
             from: buyer1,
           }),
