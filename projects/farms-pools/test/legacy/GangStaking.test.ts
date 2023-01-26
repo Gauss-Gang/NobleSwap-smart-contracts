@@ -6,7 +6,7 @@ const CakeToken = artifacts.require("NobleToken");
 const BnbStaking = artifacts.require("GangStaking");
 const WBNB = artifacts.require("WBNB");
 
-contract("BNB Staking", async ([alice, bob, admin, dev, minter]) => {
+contract("Gang Staking", async ([alice, bob, admin, dev, minter]) => {
   let rewardToken, wBNB, bnbChef;
 
   beforeEach(async () => {
