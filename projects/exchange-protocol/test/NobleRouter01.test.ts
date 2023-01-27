@@ -1,6 +1,6 @@
 import chai, { expect } from 'chai'
 import { Contract } from 'ethers'
-import { constants, BigNumber, utils } from 'ethers'
+import { constants, BigNumber, utils, providers } from 'ethers'
 import { solidity, MockProvider, createFixtureLoader } from 'ethereum-waffle'
 import { ecsign } from 'ethereumjs-util'
 const { ethers } = require('hardhat')
