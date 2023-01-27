@@ -9,7 +9,6 @@ import "dotenv/config";
 
 import "@nomicfoundation/hardhat-toolbox";
 import '@nomicfoundation/hardhat-chai-matchers'
-import '@nomiclabs/hardhat-waffle'
 import 'ethereum-waffle'
 
 const bscTestnet: NetworkUserConfig = {

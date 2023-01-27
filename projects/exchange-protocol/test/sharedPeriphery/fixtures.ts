@@ -1,5 +1,4 @@
-import { Wallet, Contract } from 'ethers'
-import { Web3Provider } from '@ethersproject/providers'
+import { Wallet, Contract, providers } from 'ethers'
 import { deployContract } from 'ethereum-waffle'
 
 import { expandTo18Decimals } from './utilities'
@@ -37,7 +36,7 @@ interface V2Fixture {
   WETHPair: Contract
 }
 
-export async function v2Fixture(provider: Web3Provider, [wallet]: Wallet[]): Promise<V2Fixture> {
+export async function v2Fixture(provider: providers.Web3Provider, [wallet]: Wallet[]): Promise<V2Fixture> {
   // deploy tokens
   const tokenA = await deployContract(wallet, ERC20, [expandTo18Decimals(10000)])
   const tokenB = await deployContract(wallet, ERC20, [expandTo18Decimals(10000)])
