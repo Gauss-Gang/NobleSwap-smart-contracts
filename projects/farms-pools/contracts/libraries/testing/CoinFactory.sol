@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import "../access/Ownable.sol";
-import "./MockGTS20.sol";
+import "../testing/MockGTS20.sol";
 
 contract CoinFactory is Ownable {
     event NewCoinCreated(address indexed coin);

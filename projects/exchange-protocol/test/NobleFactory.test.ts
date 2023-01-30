@@ -63,6 +63,9 @@ describe('NobleFactory', () => {
     const pair = new Contract(create2Address, JSON.stringify(NoblePair.abi),      
     Signer.isSigner(accounts[0]) ? accounts[0] : accounts[0].connect(provider))
     console.log('fail8')
+    console.log('factory address: ', factory.address)
+    //console.log('pair: ', pair)
+    console.log('await pair.factory()', await pair.factory())
     expect(await pair.factory()).to.eq(factory.address)
     console.log('fail9')
     expect(await pair.token0()).to.eq(TEST_ADDRESSES[0])

@@ -1,5 +1,6 @@
 
 import { Contract, providers, utils, BigNumber } from 'ethers'
+import { Web3Provider } from '@ethersproject/providers'
 
 const PERMIT_TYPEHASH = utils.keccak256(
   utils.toUtf8Bytes('Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)')
@@ -70,7 +71,7 @@ export async function getApprovalDigest(
   )
 }
 
-export async function mineBlock(provider: providers.Web3Provider, timestamp: number): Promise<void> {
+export async function mineBlock(provider: Web3Provider, timestamp: number): Promise<void> {
   await new Promise(async (resolve, reject) => {
     ;(provider.provider.sendAsync as any)(
       { jsonrpc: '2.0', method: 'evm_mine', params: [timestamp] },

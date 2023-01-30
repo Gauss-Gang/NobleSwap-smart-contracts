@@ -5,7 +5,7 @@ import { assert } from "chai";
 const CakeToken = artifacts.require("NobleToken");
 const SyrupBar = artifacts.require("NobleBar");
 const MasterChef = artifacts.require("MasterChef");
-const MockBEP20 = artifacts.require("libs/MockERC20");
+const MockBEP20 = artifacts.require("MockGTS20");
 
 contract("MasterChef", ([alice, bob, dev, minter]) => {
   let cake, syrup, lp1, lp2, lp3, chef;

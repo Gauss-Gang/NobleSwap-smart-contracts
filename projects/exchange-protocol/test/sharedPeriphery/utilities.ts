@@ -1,4 +1,6 @@
 import { Contract, BigNumber, utils, providers  } from 'ethers'
+import { Web3Provider } from '@ethersproject/providers'
+
 export const MINIMUM_LIQUIDITY = BigNumber.from(10).pow(3)
 
 const PERMIT_TYPEHASH = utils.keccak256(
@@ -54,7 +56,7 @@ export async function getApprovalDigest(
   )
 }
 
-export async function mineBlock(provider: providers.Web3Provider, timestamp: number): Promise<void> {
+export async function mineBlock(provider: Web3Provider, timestamp: number): Promise<void> {
   await new Promise(async (resolve, reject) => {
     ;(provider._web3Provider.sendAsync as any)(
       { jsonrpc: '2.0', method: 'evm_mine', params: [timestamp] },

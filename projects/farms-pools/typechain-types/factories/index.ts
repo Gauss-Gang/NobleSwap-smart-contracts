@@ -2,9 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as masterChefSol from "./MasterChef.sol";
-export * as libs from "./libs";
-export * as standardLibs from "./standard-libs";
-export * as upgradableLibs from "./upgradable-libs";
+export * as libraries from "./libraries";
 export { GangStaking__factory } from "./GangStaking__factory";
 export { NobleBar__factory } from "./NobleBar__factory";
 export { NobleToken__factory } from "./NobleToken__factory";

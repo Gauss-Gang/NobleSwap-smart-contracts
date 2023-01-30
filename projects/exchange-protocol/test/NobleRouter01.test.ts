@@ -39,7 +39,7 @@ describe('NobleRouter{01,02}', () => {
     let WETHPair: Contract
     let routerEventEmitter: Contract
     beforeEach(async function() {
-        console.log('fail0')
+      console.log('fail0')
       const fixture = await loadFixture(v2Fixture)
       console.log('fail1')
       token0 = fixture.token0

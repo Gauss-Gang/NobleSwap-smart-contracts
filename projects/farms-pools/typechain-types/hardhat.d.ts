@@ -17,30 +17,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.GangStaking__factory>;
     getContractFactory(
-      name: "MockERC20",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.MockERC20__factory>;
-    getContractFactory(
-      name: "WBNB",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.WBNB__factory>;
-    getContractFactory(
-      name: "IMigratorChef",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IMigratorChef__factory>;
-    getContractFactory(
-      name: "MasterChef",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.MasterChef__factory>;
-    getContractFactory(
-      name: "NobleBar",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.NobleBar__factory>;
-    getContractFactory(
-      name: "NobleToken",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.NobleToken__factory>;
-    getContractFactory(
       name: "Ownable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
@@ -69,45 +45,29 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MockGTS20__factory>;
     getContractFactory(
-      name: "Ownable_UPG",
+      name: "MockGTS20",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Ownable_UPG__factory>;
+    ): Promise<Contracts.MockGTS20__factory>;
     getContractFactory(
-      name: "GTS20_UPG",
+      name: "WBNB",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.GTS20_UPG__factory>;
+    ): Promise<Contracts.WBNB__factory>;
     getContractFactory(
-      name: "GTS20Snapshot_UPG",
+      name: "IMigratorChef",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.GTS20Snapshot_UPG__factory>;
+    ): Promise<Contracts.IMigratorChef__factory>;
     getContractFactory(
-      name: "ScheduledTokenLock",
+      name: "MasterChef",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ScheduledTokenLock__factory>;
+    ): Promise<Contracts.MasterChef__factory>;
     getContractFactory(
-      name: "TokenLock",
+      name: "NobleBar",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.TokenLock__factory>;
+    ): Promise<Contracts.NobleBar__factory>;
     getContractFactory(
-      name: "IBeacon",
+      name: "NobleToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IBeacon__factory>;
-    getContractFactory(
-      name: "IGTS20_UPG",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IGTS20_UPG__factory>;
-    getContractFactory(
-      name: "Pausable",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Pausable__factory>;
-    getContractFactory(
-      name: "GTS20Upgrade",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.GTS20Upgrade__factory>;
-    getContractFactory(
-      name: "UUPSUpgradeable",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.UUPSUpgradeable__factory>;
+    ): Promise<Contracts.NobleToken__factory>;
     getContractFactory(
       name: "WGANG",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -118,36 +78,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.GangStaking>;
-    getContractAt(
-      name: "MockERC20",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.MockERC20>;
-    getContractAt(
-      name: "WBNB",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.WBNB>;
-    getContractAt(
-      name: "IMigratorChef",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IMigratorChef>;
-    getContractAt(
-      name: "MasterChef",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.MasterChef>;
-    getContractAt(
-      name: "NobleBar",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.NobleBar>;
-    getContractAt(
-      name: "NobleToken",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.NobleToken>;
     getContractAt(
       name: "Ownable",
       address: string,
@@ -184,55 +114,35 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.MockGTS20>;
     getContractAt(
-      name: "Ownable_UPG",
+      name: "MockGTS20",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Ownable_UPG>;
+    ): Promise<Contracts.MockGTS20>;
     getContractAt(
-      name: "GTS20_UPG",
+      name: "WBNB",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.GTS20_UPG>;
+    ): Promise<Contracts.WBNB>;
     getContractAt(
-      name: "GTS20Snapshot_UPG",
+      name: "IMigratorChef",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.GTS20Snapshot_UPG>;
+    ): Promise<Contracts.IMigratorChef>;
     getContractAt(
-      name: "ScheduledTokenLock",
+      name: "MasterChef",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.ScheduledTokenLock>;
+    ): Promise<Contracts.MasterChef>;
     getContractAt(
-      name: "TokenLock",
+      name: "NobleBar",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.TokenLock>;
+    ): Promise<Contracts.NobleBar>;
     getContractAt(
-      name: "IBeacon",
+      name: "NobleToken",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.IBeacon>;
-    getContractAt(
-      name: "IGTS20_UPG",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IGTS20_UPG>;
-    getContractAt(
-      name: "Pausable",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Pausable>;
-    getContractAt(
-      name: "GTS20Upgrade",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.GTS20Upgrade>;
-    getContractAt(
-      name: "UUPSUpgradeable",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.UUPSUpgradeable>;
+    ): Promise<Contracts.NobleToken>;
     getContractAt(
       name: "WGANG",
       address: string,
