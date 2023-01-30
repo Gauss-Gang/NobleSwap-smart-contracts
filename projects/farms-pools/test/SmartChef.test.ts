@@ -4,9 +4,9 @@
 // import { assert } from "chai";
 // import { BN, expectEvent, expectRevert, time } from "@openzeppelin/test-helpers";
 
-// const MockBEP20 = artifacts.require("./libs/MockBEP20.sol");
-// const MockERC20 = artifacts.require("./libs/MockERC20.sol");
-// const SmartChef = artifacts.require("./SmartChef.sol");
+// const MockBEP20 = artifacts.require("contracts/libs/MockGTS20");
+// const MockERC20 = artifacts.require("contracts/libs/MockERC20");
+// const SmartChef = artifacts.require("./MasterChef.sol");
 
 // contract("Smart Chef V2", ([alice, bob, carol, david, erin, frank, ...accounts]) => {
 //   // Contracts

@@ -1,4 +1,4 @@
-import type { HardhatUserConfig, NetworkUserConfig } from "hardhat/types";
+//import type { HardhatUserConfig, NetworkUserConfig } from "hardhat/types";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-web3";
 import "@nomiclabs/hardhat-truffle5";
@@ -8,6 +8,8 @@ import "solidity-coverage";
 import "dotenv/config";
 
 import "@nomicfoundation/hardhat-toolbox";
+import '@nomicfoundation/hardhat-chai-matchers'
+import 'ethereum-waffle'
 
 const bscTestnet: NetworkUserConfig = {
   url: "https://data-seed-prebsc-1-s1.binance.org:8545/",

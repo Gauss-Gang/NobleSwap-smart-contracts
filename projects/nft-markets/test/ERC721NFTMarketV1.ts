@@ -4,12 +4,12 @@ import { assert } from "chai";
 import { BN, constants, expectEvent, expectRevert } from "@openzeppelin/test-helpers";
 
 const ERC721NFTMarketV1 = artifacts.require("./ERC721NFTMarketV1.sol");
-const PancakeBunniesWhitelistChecker = artifacts.require("./PancakeBunniesWhitelistChecker.sol");
+const PancakeBunniesWhitelistChecker = artifacts.require("./interfaces/PancakeBunniesWhitelistChecker.sol"); // remove use this insted: ICollectionWhitelistChecker
 
-const MockERC20 = artifacts.require("./test/MockERC20.sol");
+const MockERC20 = artifacts.require("./test/MockGTS20.sol");
 const MockNFT = artifacts.require("./test/MockNFT.sol");
 const WBNB = artifacts.require("./test/WBNB.sol");
-const PancakeBunnies = artifacts.require(".test/PancakeBunnies.sol");
+const PancakeBunnies = artifacts.require("./test/PancakeBunnies.sol");
 
 contract(
   "ERC721 NFT Market V1",
@@ -290,7 +290,7 @@ contract(
           tokenId: "1",
         });
 
-        result = await collectibleMarket.buyTokenUsingWBNB(mockNFT1.address, "1", parseEther("1.1").toString(), {
+        result = await collectibleMarket.buyTokenUsingWGANG(mockNFT1.address, "1", parseEther("1.1").toString(), {
           from: buyer1,
         });
 
@@ -644,7 +644,7 @@ contract(
           collectibleMarket.createAskOrder(mockNFT2.address, "5", parseEther("1.1"), {
             from: seller1,
           }),
-          "ERC721: transfer of token that is not own"
+          "ERC721: transfer from incorrect owner"
         );
       });
 
@@ -654,9 +654,11 @@ contract(
           from: seller1,
         });
 
-        // Seller1 cannot purchase its own offer for 1 WBNB
+        // Seller1 cannot purchase its own offer for 1 BNB
         await expectRevert(
-          collectibleMarket.buyTokenUsingBNB(mockNFT2.address, "0", {
+          collectibleMarket.buyTokenUsingBNB(mockNFT2.address, "0", 
+          // parseEther("1"), 
+          {
             value: parseEther("1").toString(),
             from: seller1,
           }),
@@ -665,7 +667,7 @@ contract(
 
         // Seller1 cannot purchase its own offer for 1 WBNB
         await expectRevert(
-          collectibleMarket.buyTokenUsingWBNB(mockNFT2.address, "0", parseEther("1"), {
+          collectibleMarket.buyTokenUsingWGANG(mockNFT2.address, "0", parseEther("1"), {
             from: seller1,
           }),
           "Buy: Buyer cannot be seller"
@@ -684,7 +686,7 @@ contract(
 
         // Seller1 cannot purchase its own offer for 1.0000000001 WBNB
         await expectRevert(
-          collectibleMarket.buyTokenUsingWBNB(mockNFT2.address, "0", parseEther("1.0000000001"), {
+          collectibleMarket.buyTokenUsingWGANG(mockNFT2.address, "0", parseEther("1.0000000001"), {
             from: seller1,
           }),
           "Buy: Incorrect price"
@@ -701,7 +703,7 @@ contract(
 
         // Seller1 cannot purchase its own offer for 0.9999999999 WBNB
         await expectRevert(
-          collectibleMarket.buyTokenUsingWBNB(mockNFT2.address, "0", parseEther("0.9999999999"), {
+          collectibleMarket.buyTokenUsingWGANG(mockNFT2.address, "0", parseEther("0.9999999999"), {
             from: seller1,
           }),
           "Buy: Incorrect price"
@@ -750,7 +752,7 @@ contract(
 
         // Buyer1 cannot change purchase the tokenId=0 for 1 BNB
         await expectRevert(
-          collectibleMarket.buyTokenUsingWBNB(mockNFT2.address, "0", parseEther("1"), {
+          collectibleMarket.buyTokenUsingWGANG(mockNFT2.address, "0", parseEther("1"), {
             from: buyer1,
           }),
           "Collection: Not for trading"
@@ -940,7 +942,7 @@ contract(
         await wrappedBNB.transfer(collectibleMarket.address, parseEther("1"), { from: buyer3 });
         await expectRevert(
           collectibleMarket.recoverFungibleTokens(wrappedBNB.address, { from: owner }),
-          "Operations: Cannot recover WBNB"
+          "Operations: Cannot recover WGANG"
         );
 
         // Cannot recover token that is still in the orderbook
@@ -1197,7 +1199,7 @@ contract(
           ERC721NFTMarketV1.new(admin, treasury, constants.ZERO_ADDRESS, minimumAskPrice, maximumAskPrice, {
             from: owner,
           }),
-          "Operations: WBNB address cannot be zero"
+          "Operations: WGANG address cannot be zero"
         );
 
         await expectRevert(

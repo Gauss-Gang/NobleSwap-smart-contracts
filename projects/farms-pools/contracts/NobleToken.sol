@@ -1,11 +1,8 @@
 /*  _____________________________________________________________________________
-
     NobleToken (NOBLE) Token Contract
-
     Name             : NobleToken
     Symbol           : NOBLE
     Total supply     : 2,500,000,000 (2.5 Billion)
-
     MIT License. (c) 2022 Gauss Gang Inc. 
     
     _____________________________________________________________________________
