@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { ERC20__factory } from "./ERC20__factory";
+export { GTS20__factory } from "./GTS20__factory";

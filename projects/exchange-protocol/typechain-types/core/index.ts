@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { ERC20 } from "./ERC20";
+export type { GTS20 } from "./GTS20";
