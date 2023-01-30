@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "./standard-libs/access/Ownable.sol";
-import "./standard-libs/libraries/SafeMath.sol";
-import "./standard-libs/interfaces/IGTS20.sol";
+import "./libraries/access/Ownable.sol";
+import "./libraries/utilities/SafeMath.sol";
+import "./libraries/interfaces/IGTS20.sol";
 import "./NobleToken.sol";
 import "./NobleBar.sol";
 // import "@nomiclabs/buidler/console.sol";

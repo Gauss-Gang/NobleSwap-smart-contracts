@@ -13,7 +13,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 pragma solidity 0.8.17;
-import "./standard-libs/interfaces/IWGANG.sol";
+import "./libraries/interfaces/IWGANG.sol";
 
 
 // Wrapped GANG contract for the native Gauss(GANG) coin. 

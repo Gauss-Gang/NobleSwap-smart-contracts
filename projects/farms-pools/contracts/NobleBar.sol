@@ -1,18 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "./standard-libs/contracts/GTS20.sol";
+import "./libraries/contracts/GTS20.sol";
 import "./NobleToken.sol";
 
 
-/*  NobleBar with Governance.
-    
-        Copied and modified from YAM code:
-            https://github.com/yam-finance/yam-protocol/blob/master/contracts/token/YAMGovernanceStorage.sol
-            https://github.com/yam-finance/yam-protocol/blob/master/contracts/token/YAMGovernance.sol
-        Which is copied and modified from COMPOUND:
-            https://github.com/compound-finance/compound-protocol/blob/master/contracts/Governance/Comp.sol
-*/
+//  NobleBar with Governance.
 contract NobleBar is GTS20("NobleBar Token", "xNOBLE") {
 
     // Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
