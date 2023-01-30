@@ -14,14 +14,10 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity 0.8.17;
-import "./upgradable-libs/utilities/Initializable.sol";
-import "./upgradable-libs/utilities/UUPSUpgradeable.sol";
-import "./upgradable-libs/contracts/GTS20_UPG.sol";
-import "./upgradable-libs/contracts/GTS20Snapshot_UPG.sol";
+import "./libraries/contracts/GTS20.sol";
 
 
-
-contract NobleToken is Initializable, GTS20_UPG, GTS20Snapshot_UPG, UUPSUpgradeable {
+contract NobleToken is GTS20("NobleSwap Token", "NOBLE") {
 
     // A checkpoint for marking number of votes from a given block.
     struct Checkpoint {
@@ -42,39 +38,16 @@ contract NobleToken is Initializable, GTS20_UPG, GTS20Snapshot_UPG, UUPSUpgradea
     mapping (address => uint) public nonces;
 
     // The EIP-712 typehash for the contract's domain
-    bytes32 public DOMAIN_TYPEHASH;
+    bytes32 public constant DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)");
 
     // The EIP-712 typehash for the delegation struct used by the contract
-    bytes32 public DELEGATION_TYPEHASH;
+    bytes32 public constant DELEGATION_TYPEHASH = keccak256("Delegation(address delegatee,uint256 nonce,uint256 expiry)");
 
     // An event thats emitted when an account changes its delegate
     event DelegateChanged(address indexed delegator, address indexed fromDelegate, address indexed toDelegate);
 
     // An event thats emitted when a delegate account's vote balance changes
     event DelegateVotesChanged(address indexed delegate, uint previousBalance, uint newBalance);
-
-
-    // Calls te GTS20 Initializer and internal Initializer to create th NobleSwap token and set required variables.
-    function initialize() initializer public {
-        __GTS20_init("NobleSwap", "NOBLE", 18, (2500000000 * (10 ** 18)));
-        __GTS20Snapshot_init_unchained();
-        __UUPSUpgradeable_init();
-        __NobleSwap_init_unchained();
-    }
-
-
-    // NobleSwap Initializer, sets state variables for the governance functionality.
-    function __NobleSwap_init_unchained() internal initializer {
-        DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)");
-        DELEGATION_TYPEHASH = keccak256("Delegation(address delegatee,uint256 nonce,uint256 expiry)");
-    }
-
-
-    // Creates a Snapshot of the balances and totalsupply of token, returns the Snapshot ID. Can only be called by owner.
-    function snapshot() public onlyOwner returns (uint256) {
-        uint256 id = _snapshot();
-        return id;
-    }
 
 
     // Creates `_amount` token to `_to`. Can only be called by the owner (MasterChef).
@@ -237,11 +210,7 @@ contract NobleToken is Initializable, GTS20_UPG, GTS20Snapshot_UPG, UUPSUpgradea
 
 
     // Internal function; overriden to allow GTS20Snapshot to update values before a Transfer event.
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override(GTS20_UPG, GTS20Snapshot_UPG) {
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override(GTS20) {
         super._beforeTokenTransfer(from, to, amount);
     }
-
-
-    // Function to allow "owner" to upgarde the contract using a UUPS Proxy.
-    function _authorizeUpgrade(address newImplementation) internal whenPaused onlyOwner override {}
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "./standard-libs/contracts/GTS20.sol";
+import "./libraries/contracts/GTS20.sol";
 import "./NobleToken.sol";
 
 
