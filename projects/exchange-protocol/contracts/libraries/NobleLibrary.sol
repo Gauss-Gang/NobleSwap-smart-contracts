@@ -28,8 +28,8 @@ library NobleLibrary {
                         hex"ff",
                         factory,
                         keccak256(abi.encodePacked(token0, token1)),
-                        hex"50368277d0bca1a07feac731baae5a92ba0b74908943febde3948c664c013723" // init code hash
-                        //If the above init code has does not work, try; 200441dd3858632b64ec6dd3d6f549c7d468ebf73af5d6908624ff2d43a8df00
+                        hex"a30d8881d5fc03317d61b3b3b25024d89f0b6f73b17f2f667c512dbbf26f9095" // init code hash
+                        //If the above init code has does not work, try; 3fc40b6337623897486dc551948af195ebd1452c6bbb7aedfbd4e292384a6da6
                     )
                 )
             )

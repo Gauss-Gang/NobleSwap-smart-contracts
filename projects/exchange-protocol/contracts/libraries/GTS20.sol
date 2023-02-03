@@ -126,8 +126,6 @@ contract GTS20 is Context, IGTS20 {
         require(sender != address(0), 'GTS20: transfer from the zero address');
         require(recipient != address(0), 'GTS20: transfer to the zero address');
         
-        _beforeTokenTransfer(sender, recipient, amount);
-        
         require(amount <= _balances[sender], "GTS20: transfer amount exceeds balance");
         
         unchecked {
@@ -144,8 +142,6 @@ contract GTS20 is Context, IGTS20 {
     function _mint(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: mint to the zero address");
 
-        _beforeTokenTransfer(address(0), account, amount);
-
         _totalSupply += amount;
         unchecked {
             // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
@@ -153,15 +149,12 @@ contract GTS20 is Context, IGTS20 {
         }
         emit Transfer(address(0), account, amount);
 
-        _afterTokenTransfer(address(0), account, amount);
     }
 
 
     // Destroys `amount` tokens from `account`, reducing the total supply. Emits a {Transfer} event.
     function _burn(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: burn from the zero address");
-
-        _beforeTokenTransfer(account, address(0), amount);
 
         uint256 accountBalance = _balances[account];
         require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
@@ -173,28 +166,5 @@ contract GTS20 is Context, IGTS20 {
 
         emit Transfer(account, address(0), amount);
 
-        _afterTokenTransfer(account, address(0), amount);
     }
-
-    
-    /*  Hook that is called before any transfer of tokens. This includes minting and burning.
-     
-        Calling conditions:
-            - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens will be transferred to `to`.
-            - when `from` is zero, `amount` tokens will be minted for `to`.
-            - when `to` is zero, `amount` of ``from``'s tokens will be burned.
-            - `from` and `to` are never both zero.
-    */
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual {}
-
-
-    /*  Hook that is called after any transfer of tokens. This includes minting and burning.
-     
-        Calling conditions:
-            - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens has been transferred to `to`.
-            - when `from` is zero, `amount` tokens have been minted for `to`.
-            - when `to` is zero, `amount` of ``from``'s tokens have been burned.
-            - `from` and `to` are never both zero.
-     */
-    function _afterTokenTransfer(address from, address to, uint256 amount) internal virtual {}
 }

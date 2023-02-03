@@ -39,11 +39,6 @@ contract NoblePair is INoblePair, NobleGTS20 {
         unlocked = 1;
     }
 
-    event Mint(address indexed sender, uint amount0, uint amount1);
-    event Burn(address indexed sender, uint amount0, uint amount1, address indexed to);
-    event Swap(address indexed sender, uint amount0In, uint amount1In, uint amount0Out, uint amount1Out, address indexed to);
-    event Sync(uint112 reserve0, uint112 reserve1);
-
 
     function getReserves() public view returns (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) {
         _reserve0 = reserve0;
@@ -56,6 +51,12 @@ contract NoblePair is INoblePair, NobleGTS20 {
         (bool success, bytes memory data) = token.call(abi.encodeWithSelector(SELECTOR, to, value));
         require(success && (data.length == 0 || abi.decode(data, (bool))), 'Noble: TRANSFER_FAILED');
     }
+
+
+    event Mint(address indexed sender, uint amount0, uint amount1);
+    event Burn(address indexed sender, uint amount0, uint amount1, address indexed to);
+    event Swap(address indexed sender, uint amount0In, uint amount1In, uint amount0Out, uint amount1Out, address indexed to);
+    event Sync(uint112 reserve0, uint112 reserve1);
 
 
     constructor() public {
