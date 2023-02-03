@@ -28,7 +28,8 @@ library NobleLibrary {
                         hex"ff",
                         factory,
                         keccak256(abi.encodePacked(token0, token1)),
-                        hex"a5934690703a592a07e841ca29d5e5c79b5e22ed4749057bb216dc31100be1c0" // init code hash
+                        hex"50368277d0bca1a07feac731baae5a92ba0b74908943febde3948c664c013723" // init code hash
+                        //If the above init code has does not work, try; 200441dd3858632b64ec6dd3d6f549c7d468ebf73af5d6908624ff2d43a8df00
                     )
                 )
             )
@@ -49,6 +50,7 @@ library NobleLibrary {
     function quote(uint amountA, uint reserveA, uint reserveB) internal pure returns (uint amountB) {
         require(amountA > 0, 'NobleLibrary: INSUFFICIENT_AMOUNT');
         require(reserveA > 0 && reserveB > 0, 'NobleLibrary: INSUFFICIENT_LIQUIDITY');
+        
         amountB = amountA.mul(reserveB) / reserveA;
     }
 
@@ -57,6 +59,7 @@ library NobleLibrary {
     function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) internal pure returns (uint amountOut) {
         require(amountIn > 0, "NobleLibrary: INSUFFICIENT_INPUT_AMOUNT");
         require(reserveIn > 0 && reserveOut > 0, "NobleLibrary: INSUFFICIENT_LIQUIDITY");
+        
         uint256 amountInWithFee = amountIn.mul(9975);
         uint256 numerator = amountInWithFee.mul(reserveOut);
         uint256 denominator = reserveIn.mul(10000).add(amountInWithFee);
@@ -68,6 +71,7 @@ library NobleLibrary {
     function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) internal pure returns (uint amountIn) {
         require(amountOut > 0, "NobleLibrary: INSUFFICIENT_OUTPUT_AMOUNT");
         require(reserveIn > 0 && reserveOut > 0, "NobleLibrary: INSUFFICIENT_LIQUIDITY");
+        
         uint256 numerator = reserveIn.mul(amountOut).mul(10000);
         uint256 denominator = reserveOut.sub(amountOut).mul(9975);
         amountIn = (numerator / denominator).add(1);
@@ -77,8 +81,10 @@ library NobleLibrary {
     // Performs chained getAmountOut calculations on any number of pairs.
     function getAmountsOut(address factory, uint amountIn, address[] memory path) internal view returns (uint[] memory amounts) {
         require(path.length >= 2, 'NobleLibrary: INVALID_PATH');
+        
         amounts = new uint256[](path.length);
         amounts[0] = amountIn;
+        
         for (uint256 i; i < path.length - 1; i++) {
             (uint256 reserveIn, uint256 reserveOut) = getReserves(factory, path[i], path[i + 1]);
             amounts[i + 1] = getAmountOut(amounts[i], reserveIn, reserveOut);
@@ -89,8 +95,10 @@ library NobleLibrary {
     // Performs chained getAmountIn calculations on any number of pairs.
     function getAmountsIn(address factory, uint amountOut, address[] memory path) internal view returns (uint[] memory amounts) {
         require(path.length >= 2, 'NobleLibrary: INVALID_PATH');
+        
         amounts = new uint256[](path.length);
         amounts[amounts.length - 1] = amountOut;
+        
         for (uint256 i = path.length - 1; i > 0; i--) {
             (uint256 reserveIn, uint256 reserveOut) = getReserves(factory, path[i - 1], path[i]);
             amounts[i - 1] = getAmountIn(amounts[i], reserveIn, reserveOut);
